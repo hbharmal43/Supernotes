@@ -22,6 +22,8 @@ app.use(cookieParser());  // Parses cookies
 
 // Serve uploaded files statically from the "uploads" directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 
 // API Routes
 app.use("/api", pdfRoutes);  // Routes for file uploads

@@ -6,29 +6,33 @@ function PdfListPage() {
 
   useEffect(() => {
     const fetchFiles = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/api/files');
-        setFiles(response.data);
-      } catch (error) {
-        console.error('Error fetching files:', error);
-      }
+      const response = await axios.get('http://localhost:5000/api/files');
+      setFiles(response.data);
     };
-
     fetchFiles();
   }, []);
 
   return (
-    <div className="container">
-      <h2>Uploaded Notes</h2>
-      <ul>
-        {files.map((file, index) => (
-          <li key={index}>
-            <a href={`http://localhost:3001/api/files/${file}`} target="_blank" rel="noopener noreferrer">
-              {file}
-            </a>
-          </li>
-        ))}
-      </ul>
+    <div>
+      <h1>Files List</h1>
+      {files.map(file => (
+        <div key={file._id} className="mb-4">
+          <p>{file.fileName}</p>
+          <p>{file.description}</p>
+          <p>{file.tags.join(', ')}</p>
+
+          {/* Download Link */}
+          <a
+            href={`http://localhost:5000/uploads/${file.filename}`} // Backend URL for file
+            target="_blank"
+            rel="noopener noreferrer"
+            download
+            className="text-blue-500 underline"
+          >
+            Download File
+          </a>
+        </div>
+      ))}
     </div>
   );
 }

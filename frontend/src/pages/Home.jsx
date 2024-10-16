@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import Sidebar from "../components/Sidebar"; // Assuming the Sidebar is located in components
-import FileUpload from "../components/FileUpload"; // Assuming the FileUpload is located in components
+import { useNavigate } from "react-router-dom"; // For navigation
+import Sidebar from "../components/Sidebar";
+import FileUpload from "../components/FileUpload";
 
 function Home() {
-  // State to control the modal visibility
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate(); // For navigation
 
   // Function to open the FileUpload modal
   const openModal = () => {
@@ -16,25 +17,39 @@ function Home() {
     setIsModalOpen(false);
   };
 
+  // Function to handle class button click
+  const handleClassClick = (courseNumber) => {
+    navigate(`/courses/${courseNumber}`); // Navigate to the course page
+  };
+
   return (
-    <div className="flex min-h-screen bg-gray-100 w-3/5 p-8 "> {/* Removed any external blue background */}
+    <div className="flex min-h-screen bg-gradient-to-br
+    from-blue-900 via-blue-800 to-blue-700 w-3/5 p-8">
       {/* Sidebar */}
       <Sidebar onOpenModal={openModal} />
 
       {/* Main content */}
       <div className="flex-grow p-8 pr-8">
-        <h1 className="text-4xl font-bold text-center mb-6">Welcome to Your Notes Dashboard</h1>
-        <p className="text-lg text-center text-gray-700 mb-4">
+        <h1 className="text-4xl font-bold text-center text-white-900 mb-6">
+          Welcome to Your Notes Dashboard
+        </h1>
+        <p className="text-lg text-center text-white-900 mb-4">
           Select a course from the sidebar or create a new note to get started.
         </p>
 
-        {/* Example of main content or dashboard */}
+        {/* Class buttons */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="bg-white p-6 rounded-lg shadow-lg">CSE-3311 </div>
-          <div className="bg-white p-6 rounded-lg shadow-lg">CSE-3315</div>
-          <div className="bg-white p-6 rounded-lg shadow-lg">CSE-4316</div>
-          <div className="bg-white p-6 rounded-lg shadow-lg">CSE-4322</div>
-          <div className="bg-white p-6 rounded-lg shadow-lg">CSE-4344</div>
+          {["CSE-3311", "CSE-3315", "CSE-4316", "CSE-4322", "CSE-4344"].map(
+            (course) => (
+              <button
+                key={course}
+                className="bg-white p-6 rounded-lg shadow-lg w-full text-left"
+                onClick={() => handleClassClick(course)}
+              >
+                {course}
+              </button>
+            )
+          )}
         </div>
       </div>
 
@@ -44,7 +59,7 @@ function Home() {
           {/* Modal overlay */}
           <div
             className="fixed inset-0 bg-black bg-opacity-50 z-50"
-            onClick={closeModal} // Clicking outside the modal will close it
+            onClick={closeModal}
           ></div>
 
           {/* Modal content */}
@@ -87,4 +102,3 @@ function Home() {
 }
 
 export default Home;
- 

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom"; // Import Link from react-router-dom for navigation
 
 function Sidebar({ onOpenModal }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,6 +37,16 @@ function Sidebar({ onOpenModal }) {
 
         {/* Navigation Links */}
         <ul className="flex flex-col space-y-2 p-4">
+          <li>
+            <Link to="/" className="block p-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
+              Home
+            </Link>
+          </li>
+          <li>
+            <Link to="/dashboard" className="block p-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
+              Dashboard
+            </Link>
+          </li>
           <li>
             <a href="#" className="block p-2 bg-black text-white rounded-lg hover:bg-gray-800 transition">
               Courses

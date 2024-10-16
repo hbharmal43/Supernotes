@@ -9,6 +9,7 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import FileUpload from "./components/FileUpload";  // Import FileUpload component
 import PdfListPage from "./pages/PdfListPage";     // Import PdfListPage component
+import CourseFilesPage from "./pages/CourseFilesPage"; // New component to view files by course
 
 import LoadingSpinner from "./components/LoadingSpinner";
 
@@ -57,9 +58,6 @@ function App() {
 			className='min-h-screen bg-gradient-to-br
     from-blue-900 via-blue-800 to-blue-700 flex items-center justify-center relative overflow-hidden'
 		>
-			<FloatingShape color='bg-blue-500' size='w-64 h-64' top='-5%' left='10%' delay={0} />
-			<FloatingShape color='bg-blue-400' size='w-48 h-48' top='70%' left='80%' delay={5} />
-			<FloatingShape color='bg-blue-300' size='w-32 h-32' top='40%' left='-10%' delay={2} />
 
 			<Routes>
 				<Route
@@ -111,7 +109,7 @@ function App() {
 						</RedirectAuthenticatedUser>
 					}
 				/>
-				{/* New Routes for Upload and Notes */}
+				{/* New Routes for File Upload and Course Files */}
 				<Route
 					path='/upload'
 					element={
@@ -121,10 +119,10 @@ function App() {
 					}
 				/>
 				<Route
-					path='/notes'
+					path='/courses/:courseNumber'
 					element={
 						<ProtectedRoute>
-							<PdfListPage />
+							<CourseFilesPage /> {/* Display files for a specific course */}
 						</ProtectedRoute>
 					}
 				/>
