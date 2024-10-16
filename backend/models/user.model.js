@@ -27,6 +27,12 @@ const userSchema = new mongoose.Schema(
 		resetPasswordExpiresAt: Date,
 		verificationToken: String,
 		verificationTokenExpiresAt: Date,
+
+		// Add a field for file references
+		uploadedFiles: [{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'File',  // This refers to the File model we'll use to store file metadata
+		}],
 	},
 	{ timestamps: true }
 );

@@ -7,12 +7,15 @@ import EmailVerificationPage from "./pages/EmailVerificationPage";
 import DashboardPage from "./pages/DashboardPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import FileUpload from "./components/FileUpload";  // Import FileUpload component
+import PdfListPage from "./pages/PdfListPage";     // Import PdfListPage component
 
 import LoadingSpinner from "./components/LoadingSpinner";
 
 import { Toaster } from "react-hot-toast";
 import { useAuthStore } from "./store/authStore";
 import { useEffect } from "react";
+import Home from "./pages/Home";
 
 // protect routes that require authentication
 const ProtectedRoute = ({ children }) => {
@@ -60,10 +63,18 @@ function App() {
 
 			<Routes>
 				<Route
-					path='/'
+					path='/Dashboard'
 					element={
 						<ProtectedRoute>
 							<DashboardPage />
+						</ProtectedRoute>
+					}
+				/>
+				<Route
+					path='/'
+					element={
+						<ProtectedRoute>
+							<Home />
 						</ProtectedRoute>
 					}
 				/>
@@ -92,13 +103,29 @@ function App() {
 						</RedirectAuthenticatedUser>
 					}
 				/>
-
 				<Route
 					path='/reset-password/:token'
 					element={
 						<RedirectAuthenticatedUser>
 							<ResetPasswordPage />
 						</RedirectAuthenticatedUser>
+					}
+				/>
+				{/* New Routes for Upload and Notes */}
+				<Route
+					path='/upload'
+					element={
+						<ProtectedRoute>
+							<FileUpload />
+						</ProtectedRoute>
+					}
+				/>
+				<Route
+					path='/notes'
+					element={
+						<ProtectedRoute>
+							<PdfListPage />
+						</ProtectedRoute>
 					}
 				/>
 				{/* catch all routes */}

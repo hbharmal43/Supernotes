@@ -73,6 +73,6 @@ const LoginPage = () => {
 			</div>
 		</motion.div>
 	);
-};
+};	
 
 export default LoginPage;

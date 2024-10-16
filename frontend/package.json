@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "auth-tutorial": "file:..",
-    "axios": "^1.7.3",
+    "axios": "^1.7.7",
+    "bootstrap": "^5.3.3",
     "framer-motion": "^11.3.21",
     "lucide-react": "^0.424.0",
     "react": "^18.3.1",
