@@ -22,9 +22,8 @@ function Sidebar({ onOpenModal }) {
 
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-full bg-gray-900 text-white shadow-lg z-40 transform transition-transform duration-300 ease-in-out ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0 md:w-64 w-64`}
+        className={`fixed top-0 left-0 h-full bg-gray-900 text-white shadow-lg z-40 transform transition-transform duration-300 ease-in-out ${isOpen ? "translate-x-0" : "-translate-x-full"
+          } md:translate-x-0 md:w-64 w-64`}
       >
         <div className="flex justify-between items-center p-4 bg-gray-800">
           <h5 className="text-white text-lg">Notes</h5>
@@ -39,19 +38,11 @@ function Sidebar({ onOpenModal }) {
         <ul className="flex flex-col space-y-2 p-4">
           <li>
             <Link to="/" className="block p-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
-              Home
-            </Link>
-          </li>
-          <li>
-            <Link to="/dashboard" className="block p-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
-              Dashboard
-            </Link>
-          </li>
-          <li>
-            <a href="#" className="block p-2 bg-black text-white rounded-lg hover:bg-gray-800 transition">
               Courses
-            </a>
+            </Link>
           </li>
+
+
           <li>
             <a href="#" className="block p-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
               My Notes
@@ -62,8 +53,13 @@ function Sidebar({ onOpenModal }) {
               Saved Notes
             </a>
           </li>
+       
+        <li>
+          <Link to="/dashboard" className="block p-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
+            Profile
+          </Link>
+        </li>
         </ul>
-
         <hr className="border-gray-700" />
 
         {/* Create Note Button */}
