@@ -1,5 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import FloatingShape from "./components/FloatingShape";
+import React from 'react';
+
 
 import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
@@ -10,7 +12,7 @@ import ResetPasswordPage from "./pages/ResetPasswordPage";
 import FileUpload from "./components/FileUpload";  // Import FileUpload component
 import PdfListPage from "./pages/PdfListPage";     // Import PdfListPage component
 import CourseFilesPage from "./pages/CourseFilesPage"; // New component to view files by course
-
+import MyNotesPage from "./pages/MyNotesPage";
 import LoadingSpinner from "./components/LoadingSpinner";
 
 import { Toaster } from "react-hot-toast";
@@ -81,6 +83,14 @@ function App() {
 					element={
 						<RedirectAuthenticatedUser>
 							<SignUpPage />
+						</RedirectAuthenticatedUser>
+					}
+				/>
+								<Route
+					path='/mynotes'
+					element={
+						<RedirectAuthenticatedUser>
+							<MyNotesPage />
 						</RedirectAuthenticatedUser>
 					}
 				/>

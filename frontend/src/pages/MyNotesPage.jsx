@@ -8,7 +8,7 @@ const MyNotesPage = () => {
   useEffect(() => {
     const fetchNotes = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/notes'); // Adjust this to your backend route
+        // const response = await axios.get('http://localhost:5000/api/notes'); // Adjust this to your backend route
         setNotes(response.data); // Assuming the response contains an array of notes
         console.log(response.data); // For debugging
       } catch (err) {

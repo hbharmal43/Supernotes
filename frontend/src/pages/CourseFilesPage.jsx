@@ -1,21 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import Sidebar from '../components/Sidebar'; // Assuming Sidebar is located in components
-import axios from 'axios'; // To fetch the files from the backend
+import Sidebar from '../components/Sidebar';
+import axios from 'axios';
 import { useParams } from 'react-router-dom';
 
 function CourseFilesPage() {
-  const { courseNumber } = useParams(); // Extract the course number from the route
+  const { courseNumber } = useParams();
   const [files, setFiles] = useState([]);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true); // New state to handle loading
 
   useEffect(() => {
     // Fetch files related to the course
     const fetchFiles = async () => {
       try {
+        console.log("Fetching files for course:", courseNumber); // Debugging line
+
         const response = await axios.get(`http://localhost:5000/api/files?courseNumber=${courseNumber}`);
-        setFiles(response.data); // Assuming response.data is the list of files
+        console.log("Response from backend:", response.data); // Debugging line
+
+        setFiles(response.data);
+        setLoading(false);
       } catch (err) {
         setError("Failed to load files. Please try again.");
+        console.error("Error fetching files:", err);
+        setLoading(false);
       }
     };
 
@@ -31,34 +39,35 @@ function CourseFilesPage() {
       <div className="flex-grow p-8 bg-gray-100">
         <h1 className="text-4xl font-bold text-center mb-6">Files for {courseNumber}</h1>
 
+        {/* Loading State */}
+        {loading && <p className="text-center text-gray-500">Loading files...</p>}
+
         {/* Error Message */}
-        {error && <p className="text-red-500 text-center">{error}</p>}
+        {error && !loading && <p className="text-red-500 text-center">{error}</p>}
 
         {/* Files List */}
-        {!error && files.length > 0 ? (
-          <ul className="space-y-4">
-            {files.map((file, index) => (
-              <li key={index} className="bg-white p-4 rounded-lg shadow-lg">
-                <h3 className="text-xl font-semibold">{file.fileName}</h3>
-                <p>{file.description}</p>
-                <p className="text-sm text-gray-500">Tags: {file.tags}</p>
-                {/* Link to download/view the file */}
-                <a
-                  href={`http://localhost:5000/uploads/${file.filename}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 underline"
-                >
-                  View File
-                </a>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-center text-gray-500">
-            {files.length === 0 && !error ? 'No files available for this course.' : ''}
-          </p>
-        )}
+        {!error && !loading && files.length > 0 ? (
+  <ul className="space-y-4">
+    {files.map((file, index) => (
+      <li key={index} className="bg-white p-4 rounded-lg shadow-lg">
+        <h3 className="text-xl font-semibold">{file.fileName}</h3>
+        <p>{file.description}</p>
+        <p className="text-sm text-gray-500">Tags: {file.tags}</p>
+        <a
+          href={file.filePath}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-500 underline"
+        >
+          View File
+        </a>
+      </li>
+    ))}
+  </ul>
+) : (
+  !loading && <p className="text-center text-gray-500">No files available for this course.</p>
+)}
+
       </div>
     </div>
   );

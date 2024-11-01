@@ -44,7 +44,7 @@ function Sidebar({ onOpenModal }) {
 
 
           <li>
-            <a href="#" className="block p-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
+            <a href="/mynotes" className="block p-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
               My Notes
             </a>
           </li>
