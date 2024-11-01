@@ -89,9 +89,9 @@ function App() {
 								<Route
 					path='/mynotes'
 					element={
-						<RedirectAuthenticatedUser>
+						<ProtectedRoute>
 							<MyNotesPage />
-						</RedirectAuthenticatedUser>
+						</ProtectedRoute>
 					}
 				/>
 				<Route
