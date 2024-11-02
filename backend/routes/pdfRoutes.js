@@ -5,6 +5,7 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import dotenv from 'dotenv';
 import { File } from '../models/fileModel.js';
 import path from 'path';
+import { verifyToken } from '../middleware/verifyToken.js'; // Import your token verification middleware
 
 dotenv.config();
 
@@ -24,11 +25,17 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage }).single('file');
 
 // Route for file upload
-router.post('/upload', (req, res) => {
+router.post('/upload', verifyToken, (req, res) => { // Use verifyToken to authenticate
     upload(req, res, async (err) => {
         if (err) {
             console.error("Error during file upload:", err);
             return res.status(500).json({ success: false, message: 'Error uploading file', error: err.message });
+        }
+
+        // Check if user is authenticated
+        const userId = req.userId; // Get the userId from the verified token
+        if (!userId) {
+            return res.status(401).json({ success: false, message: 'User not authenticated.' });
         }
 
         const fileContent = req.file.buffer;
@@ -56,6 +63,7 @@ router.post('/upload', (req, res) => {
                 tags: req.body.tags.split(','),
                 courseNumber,
                 filePath: `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${s3Key}`,
+                uploadedBy: userId, // Set the uploadedBy field to the authenticated user
             });
 
             await newFile.save();
@@ -100,7 +108,7 @@ router.get('/files', async (req, res) => {
       console.error("Error fetching files from S3:", error);
       res.status(500).json({ error: 'Error fetching files' });
     }
-  });
+});
 
 // Route to fetch folders (course names) from S3
 router.get('/courses', async (req, res) => {
@@ -129,3 +137,4 @@ router.get('/courses', async (req, res) => {
 });
 
 export default router;
+

@@ -6,6 +6,7 @@ import path from "path";
 import pdfRoutes from "./routes/pdfRoutes.js";  // PDF upload routes
 import { connectDB } from "./db/connectDB.js";
 import authRoutes from "./routes/auth.route.js";  // Authentication routes
+import fileRoutes from './routes/files.route.js'; // File routes for user notes
 
 dotenv.config();
 const app = express();
@@ -22,24 +23,25 @@ app.use(cookieParser());  // Parses cookies
 
 // Serve uploaded files statically from the "uploads" directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
 
 // API Routes
 app.use("/api", pdfRoutes);  // Routes for file uploads
 app.use("/api/auth", authRoutes);  // Routes for authentication
+app.use("/api/files", fileRoutes);  // Routes for fetching user notes
 
 // Production configuration to serve frontend
 if (process.env.NODE_ENV === "production") {
-	app.use(express.static(path.join(__dirname, "/frontend/dist")));
+    app.use(express.static(path.join(__dirname, "frontend")));
 
-	app.get("*", (req, res) => {
-		res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
-	});
+    // Serve the index.html file for any other routes
+    app.get("*", (req, res) => {
+        res.sendFile(path.resolve(__dirname, "frontend", "index.html"));
+    });
 }
 
 // Start server and connect to database
 app.listen(PORT, () => {
-	connectDB();
-	console.log("Server is running on port: ", PORT);
+    connectDB();
+    console.log("Server is running on port: ", PORT);
 });
+

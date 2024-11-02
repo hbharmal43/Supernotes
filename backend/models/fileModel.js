@@ -15,7 +15,7 @@ const fileSchema = new mongoose.Schema({
   uploadedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User', // Reference to the User model, if needed in the future
-    required: false, // Make it optional
+    required: true, // Make it optional
   },
 }, { timestamps: true });
 

@@ -47,30 +47,46 @@ function CourseFilesPage() {
 
         {/* Files List */}
         {!error && !loading && files.length > 0 ? (
-  <ul className="space-y-4">
-    {files.map((file, index) => (
-      <li key={index} className="bg-white p-4 rounded-lg shadow-lg">
-        <h3 className="text-xl font-semibold">{file.fileName}</h3>
-        <p>{file.description}</p>
-        <p className="text-sm text-gray-500">Tags: {file.tags}</p>
-        <a
-          href={file.filePath}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-500 underline"
-        >
-          View File
-        </a>
-      </li>
-    ))}
-  </ul>
-) : (
-  !loading && <p className="text-center text-gray-500">No files available for this course.</p>
-)}
+          <ul className="space-y-4">
+            {files.map((file, index) => (
+              <li key={index} className="bg-white p-4 rounded-lg shadow-lg">
+                <h3 className="text-xl font-semibold">{file.fileName}</h3>
+                <p>{file.description}</p>
+                <p className="text-sm text-gray-500">Tags: {file.tags}</p>
 
+                {/* Thumbnail Preview */}
+                {file.filePath.endsWith('.pdf') ? (
+                  <img
+                    src={`https://via.placeholder.com/150/0000FF/FFFFFF?text=PDF`}
+                    alt={file.fileName}
+                    className="mt-2 mb-2 w-32 h-32 object-cover"
+                  />
+                ) : (
+                  <img
+                    src={file.filePath}
+                    alt={file.fileName}
+                    className="mt-2 mb-2 w-32 h-32 object-cover"
+                  />
+                )}
+
+                <a
+                  href={file.filePath}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 underline"
+                >
+                  View File
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          !loading && <p className="text-center text-gray-500">No files available for this course.</p>
+        )}
       </div>
     </div>
   );
 }
 
 export default CourseFilesPage;
+
