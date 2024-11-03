@@ -35,34 +35,40 @@ function Home() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 w-3/5 p-8">
+    <div className="flex min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700">
       {/* Sidebar */}
-      <Sidebar onOpenModal={openModal} />
+      <div className="w-1/4"> {/* Fixed width for sidebar */}
+        <Sidebar onOpenModal={openModal} />
+      </div>
 
       {/* Main content */}
-      <div className="flex-grow p-8 pr-8">
-        <h1 className="text-4xl font-bold text-center text-white-900 mb-6">
-          Welcome to Your Notes Dashboard
-        </h1>
-        <p className="text-lg text-center text-white-900 mb-4">
-          Select a course from the sidebar or create a new note to get started.
-        </p>
+      <div className="flex-grow flex items-center justify-center p-10">
+        <div className="bg-gray-50 bg-opacity-80 rounded-lg shadow-lg p-8 max-w-2xl w-full h-[90vh] flex flex-col">
+          <div className="flex-grow"> {/* Ensures the content below takes available space */}
+            <h1 className="text-4xl font-bold text-center text-gray-900 mb-4">
+              Welcome to Your Notes Dashboard
+            </h1>
+            <p className="text-lg text-center text-gray-700 mb-6">
+              Select a course from the sidebar or create a new note to get started.
+            </p>
 
-        {/* Class buttons */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {folders.length > 0 ? (
-            folders.map((course) => (
-              <button
-                key={course}
-                className="bg-white p-6 rounded-lg shadow-lg w-full text-left"
-                onClick={() => handleClassClick(course)}
-              >
-                {course}
-              </button>
-            ))
-          ) : (
-            <p className="text-center text-white">No courses found.</p>
-          )}
+            {/* Class buttons */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {folders.length > 0 ? (
+                folders.map((course) => (
+                  <button
+                    key={course}
+                    className="bg-white p-4 rounded-lg shadow-md w-full text-left" // Adjusted padding for button
+                    onClick={() => handleClassClick(course)}
+                  >
+                    {course}
+                  </button>
+                ))
+              ) : (
+                <p className="text-center text-gray-700">No courses found.</p>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 

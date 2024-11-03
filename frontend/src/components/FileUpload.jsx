@@ -56,6 +56,7 @@ function FileUpload() {
   const handleCancel = () => {
     resetForm();
     setMessage(""); // Clear the message on cancel
+    navigate(-1); // Navigate back to the previous page
   };
 
   const resetForm = () => {
@@ -67,8 +68,8 @@ function FileUpload() {
   };
 
   return (
-    <div className="bg-white p-3 rounded">
-      <h2 className="text-center" style={{ color: "#4a90e2", fontWeight: "bold" }}>
+      <div className="bg-white p-3 rounded">
+      <h2 className="text-center" style={{ color: "#4a90e2", fontWeight: "bold",fontSize: "24px" }}>
         File Upload
       </h2>
       <form onSubmit={handleSubmit}>
@@ -79,6 +80,7 @@ function FileUpload() {
             className="form-control"
             value={fileName}
             onChange={(e) => setFileName(e.target.value)}
+            style={{ border: '2px solid #ccc', width: '90%', margin: '0 auto' }} // Subtle gray border
           />
         </div>
         <div className="mb-3">
@@ -87,6 +89,7 @@ function FileUpload() {
             className="form-control"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+            style={{ border: '2px solid #ccc', width: '90%', margin: '0 auto' }} // Subtle gray border
           />
         </div>
         <div className="mb-3">
@@ -96,15 +99,17 @@ function FileUpload() {
             className="form-control"
             value={tags}
             onChange={(e) => setTags(e.target.value)}
+            style={{ border: '2px solid #ccc', width: '90%', margin: '0 auto' }} // Subtle gray border
           />
         </div>
         <div className="mb-3">
           <input
             type="text"
-            placeholder="Course Number (e.g., CSE-3315)" // Field for the course number
+            placeholder="Course Number (e.g., CSE-3315)"
             className="form-control"
             value={courseNumber}
             onChange={(e) => setCourseNumber(e.target.value)}
+            style={{ border: '2px solid #ccc', width: '90%', margin: '0 auto' }} // Subtle gray border
           />
         </div>
         <div className="mb-3">
@@ -114,16 +119,37 @@ function FileUpload() {
             onChange={handleFileChange}
           />
         </div>
-        <button type="submit" className="btn btn-success w-100">
-          Upload
-        </button>
-        <button
-          type="button"
-          className="btn btn-light w-100 mt-2 border"
-          onClick={handleCancel}
-        >
-          Cancel
-        </button>
+        <div className="d-flex justify-content-between">
+          <button
+            type="submit"
+            className="btn"
+            style={{
+              backgroundColor: '#3b82f6', // Vibrant pastel green
+              color: '#333',
+              borderRadius: '15px', // Rounded corners
+              border: 'none', // No border
+              padding: '5px 10px', // Reduced padding for smaller buttons
+              width: '25%', // Set a width for smaller buttons
+            }}
+          >
+            Upload
+          </button>
+          <button
+            type="button"
+            className="btn"
+            style={{
+              backgroundColor: '#ef4444', // Vibrant pastel red
+              color: '#333',
+              borderRadius: '15px', // Rounded corners
+              border: 'none', // No border
+              padding: '5px 10px', // Reduced padding for smaller buttons
+              width: '25%', // Set a width for smaller buttons
+            }}
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
+        </div>
       </form>
 
       {message && (

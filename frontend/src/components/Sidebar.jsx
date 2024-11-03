@@ -15,6 +15,7 @@ function Sidebar({ onOpenModal }) {
         <button
           className="fixed top-4 left-4 z-50 p-2 bg-gray-800 text-white rounded-md block md:hidden"
           onClick={toggleSidebar}
+          aria-label="Open sidebar"
         >
           <i className="fas fa-bars"></i>
         </button>
@@ -28,7 +29,11 @@ function Sidebar({ onOpenModal }) {
         <div className="flex justify-between items-center p-4 bg-gray-800">
           <h5 className="text-white text-lg">Notes</h5>
           {/* Close Button - Only Visible for Small Screens */}
-          <button className="text-white block md:hidden" onClick={toggleSidebar}>
+          <button
+            className="text-white block md:hidden"
+            onClick={toggleSidebar}
+            aria-label="Close sidebar"
+          >
             <i className="fas fa-times"></i>
           </button>
         </div>
@@ -37,28 +42,37 @@ function Sidebar({ onOpenModal }) {
         {/* Navigation Links */}
         <ul className="flex flex-col space-y-2 p-4">
           <li>
-            <Link to="/" className="block p-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
+            <Link
+              to="/"
+              className="block p-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
+            >
               Courses
             </Link>
           </li>
-
-
           <li>
-            <a href="/mynotes" className="block p-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
+            <Link
+              to="/mynotes"
+              className="block p-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
+            >
               My Notes
-            </a>
+            </Link>
           </li>
           <li>
-            <a href="#" className="block p-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
+            <a
+              href="#"
+              className="block p-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
+            >
               Saved Notes
             </a>
           </li>
-       
-        <li>
-          <Link to="/dashboard" className="block p-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
-            Profile
-          </Link>
-        </li>
+          <li>
+            <Link
+              to="/dashboard"
+              className="block p-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
+            >
+              Profile
+            </Link>
+          </li>
         </ul>
         <hr className="border-gray-700" />
 
