@@ -1,9 +1,8 @@
-
-import React, { useState, useEffect, useRef } from 'react';
-import Sidebar from '../components/Sidebar';
-import UserFileCard from '../components/UserFileCard'; // Adjust the path as needed
-import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from "react";
+import Sidebar from "../components/Sidebar";
+import UserFileCard from "../components/UserFileCard"; // Adjust the path as needed
+import axios from "axios";
+import { useParams } from "react-router-dom";
 
 function MyNotesPage() {
   const { courseNumber } = useParams();
@@ -54,9 +53,9 @@ function MyNotesPage() {
   };
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -128,7 +127,10 @@ function MyNotesPage() {
         {/* PDF Viewer */}
         {viewingFile && (
           <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-            <div className="bg-white p-4 rounded shadow-lg relative" ref={viewerRef}>
+            <div
+              className="bg-white p-4 rounded shadow-lg relative"
+              ref={viewerRef}
+            >
               <button
                 onClick={handleCloseViewer}
                 className="absolute top-2 right-2 text-red-500 font-bold"
