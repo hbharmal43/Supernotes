@@ -7,7 +7,7 @@ function PdfListPage() {
 
   useEffect(() => {
     const fetchFiles = async () => {
-      const response = await axios.get("http://localhost:5001/api/files");
+      const response = await axios.get("http://localhost:5000/api/files");
       setFiles(response.data);
     };
     fetchFiles();
@@ -40,7 +40,7 @@ function PdfListPage() {
 
           {/* Download Link */}
           <a
-            href={`http://localhost:5001/uploads/${file.filename}`} // Backend URL for file
+            href={`http://localhost:5000/uploads/${file.filename}`} // Backend URL for file
             target="_blank"
             rel="noopener noreferrer"
             download
@@ -62,7 +62,7 @@ function PdfListPage() {
               X
             </button>
             <iframe
-              src={`http://localhost:5001/uploads/${viewingFile.filename}`} // URL of the PDF file
+              src={`http://localhost:5000/uploads/${viewingFile.filename}`} // URL of the PDF file
               width="600"
               height="800"
               title="PDF Viewer"

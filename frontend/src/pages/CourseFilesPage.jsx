@@ -17,7 +17,7 @@ function CourseFilesPage() {
     const fetchFiles = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5001/api/files?courseNumber=${courseNumber}`
+          `http://localhost:5000/api/files?courseNumber=${courseNumber}`
         );
         setFiles(response.data);
         setLoading(false);

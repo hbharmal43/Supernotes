@@ -32,7 +32,7 @@ function FileUpload() {
     try {
       // Send form data to backend
       const response = await axios.post(
-        "http://localhost:5001/api/upload", // Ensure this matches your backend URL
+        "http://localhost:5000/api/upload", // Ensure this matches your backend URL
         formData,
         {
           headers: {
