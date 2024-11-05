@@ -44,6 +44,7 @@ function UserFileCard({ file, handleViewFile, deleteFile }) {
           <img
             src={`https://via.placeholder.com/150/0000FF/FFFFFF?text=PDF`}
             alt={file.fileName}
+            alt={file.filePath}
             className="w-full h-auto object-cover rounded"
           />
         ) : (
