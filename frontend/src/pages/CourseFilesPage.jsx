@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
-import Sidebar from "../components/Sidebar";
-import axios from "axios";
-import { useParams } from "react-router-dom";
+
+import React, { useState, useEffect, useRef } from 'react';
+import Sidebar from '../components/Sidebar';
+import FileCard from "../components/FileCard"; // Import FileCard component
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
 function CourseFilesPage() {
   const { courseNumber } = useParams();
@@ -14,6 +16,7 @@ function CourseFilesPage() {
   const dropdownRef = useRef(null);
 
   useEffect(() => {
+    // Fetch files related to the course
     const fetchFiles = async () => {
       try {
         const response = await axios.get(
@@ -69,10 +72,12 @@ function CourseFilesPage() {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700">
+      {/* Sidebar */}
       <div className="w-1/4">
         <Sidebar />
       </div>
 
+      {/* Main content */}
       <div className="flex-grow p-10">
         <div
           className="bg-gray-50 bg-opacity-80 rounded-lg shadow-lg p-8"
@@ -89,10 +94,11 @@ function CourseFilesPage() {
             <p className="text-red-500 text-center">{error}</p>
           )}
 
+          {/* Files List */}
           {!error && !loading && files.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {files.map((file) => (
-                <div
+                <FileCard
                   key={file._id}
                   className="bg-white p-4 rounded-lg shadow-lg flex flex-col items-center h-60 w-full max-w-[300px] mx-auto"
                 >
@@ -176,6 +182,7 @@ function CourseFilesPage() {
           )}
         </div>
 
+        {/* PDF Viewer */}
         {viewingFile && (
           <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
             <div

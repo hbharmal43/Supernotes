@@ -10,7 +10,7 @@ const FileCardDropdown = ({ isOpen, toggleDropdown, fileId }) => {
     <div>
       <button
         onClick={toggleDropdown}
-        className="bg-gray-500 text-white px-2 py-1 rounded hover:bg-gray-600 transition w-10"
+        className="bg-gray-500 text-white px-2 py-1 rounded hover:bg-gray-600 transition z-10"
       >
         Options
       </button>
