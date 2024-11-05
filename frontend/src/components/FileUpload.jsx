@@ -3,11 +3,11 @@ import axios from "axios";
 
 function FileUpload() {
   const [file, setFile] = useState(null);
-  const [fileName, setFileName] = useState(""); // User-provided file name
+  const [fileName, setFileName] = useState(""); 
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState("");
-  const [courseNumber, setCourseNumber] = useState(""); // New state for course number
-  const [message, setMessage] = useState(""); // State to store success/error message
+  const [courseNumber, setCourseNumber] = useState("");
+  const [message, setMessage] = useState(""); 
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -16,30 +16,31 @@ function FileUpload() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Validate courseNumber format
+    const courseNumberPattern = /^[A-Za-z]+-\d+$/;
+    if (!courseNumberPattern.test(courseNumber)) {
+      setMessage("Course Number format should be COURSENAME-NUMBER (e.g., CSE-3315).");
+      return;
+    }
+
     if (!file || !fileName || !description || !tags || !courseNumber) {
       setMessage("Please fill in all fields.");
       return;
     }
 
-    // Prepare form data
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("fileName", fileName); // Add the file name
+    formData.append("fileName", fileName);
     formData.append("description", description);
     formData.append("tags", tags);
-    formData.append("courseNumber", courseNumber); // Add the course number
+    formData.append("courseNumber", courseNumber);
 
     try {
-      // Send form data to backend
-      const response = await axios.post(
-        "http://localhost:5000/api/upload", // Ensure this matches your backend URL
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axios.post("http://localhost:5000/api/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       if (response.data.success) {
         setMessage(`File uploaded successfully for course ${courseNumber}!`);
@@ -55,8 +56,7 @@ function FileUpload() {
 
   const handleCancel = () => {
     resetForm();
-    setMessage(""); // Clear the message on cancel
-    navigate(-1); // Navigate back to the previous page
+    setMessage("");
   };
 
   const resetForm = () => {
@@ -64,12 +64,12 @@ function FileUpload() {
     setFileName("");
     setDescription("");
     setTags("");
-    setCourseNumber(""); // Reset course number
+    setCourseNumber("");
   };
 
   return (
-      <div className="bg-white p-3 rounded">
-      <h2 className="text-center" style={{ color: "#4a90e2", fontWeight: "bold",fontSize: "24px" }}>
+    <div className="bg-white p-3 rounded">
+      <h2 className="text-center" style={{ color: "#4a90e2", fontWeight: "bold", fontSize: "24px" }}>
         File Upload
       </h2>
       <form onSubmit={handleSubmit}>
@@ -80,7 +80,7 @@ function FileUpload() {
             className="form-control"
             value={fileName}
             onChange={(e) => setFileName(e.target.value)}
-            style={{ border: '2px solid #ccc', width: '90%', margin: '0 auto' }} // Subtle gray border
+            style={{ border: '2px solid #ccc', width: '90%', margin: '0 auto' }}
           />
         </div>
         <div className="mb-3">
@@ -89,7 +89,7 @@ function FileUpload() {
             className="form-control"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            style={{ border: '2px solid #ccc', width: '90%', margin: '0 auto' }} // Subtle gray border
+            style={{ border: '2px solid #ccc', width: '90%', margin: '0 auto' }}
           />
         </div>
         <div className="mb-3">
@@ -99,17 +99,17 @@ function FileUpload() {
             className="form-control"
             value={tags}
             onChange={(e) => setTags(e.target.value)}
-            style={{ border: '2px solid #ccc', width: '90%', margin: '0 auto' }} // Subtle gray border
+            style={{ border: '2px solid #ccc', width: '90%', margin: '0 auto' }}
           />
         </div>
         <div className="mb-3">
           <input
             type="text"
-            placeholder="Course Number (e.g., CSE-3315)"
+            placeholder="Course Number (e.g., COURSENAME-NUMBER)"
             className="form-control"
             value={courseNumber}
             onChange={(e) => setCourseNumber(e.target.value)}
-            style={{ border: '2px solid #ccc', width: '90%', margin: '0 auto' }} // Subtle gray border
+            style={{ border: '2px solid #ccc', width: '90%', margin: '0 auto' }}
           />
         </div>
         <div className="mb-3">
@@ -124,12 +124,12 @@ function FileUpload() {
             type="submit"
             className="btn"
             style={{
-              backgroundColor: '#3b82f6', // Vibrant pastel green
+              backgroundColor: '#3b82f6',
               color: '#333',
-              borderRadius: '15px', // Rounded corners
-              border: 'none', // No border
-              padding: '5px 10px', // Reduced padding for smaller buttons
-              width: '25%', // Set a width for smaller buttons
+              borderRadius: '15px',
+              border: 'none',
+              padding: '5px 10px',
+              width: '25%',
             }}
           >
             Upload
@@ -138,12 +138,12 @@ function FileUpload() {
             type="button"
             className="btn"
             style={{
-              backgroundColor: '#ef4444', // Vibrant pastel red
+              backgroundColor: '#ef4444',
               color: '#333',
-              borderRadius: '15px', // Rounded corners
-              border: 'none', // No border
-              padding: '5px 10px', // Reduced padding for smaller buttons
-              width: '25%', // Set a width for smaller buttons
+              borderRadius: '15px',
+              border: 'none',
+              padding: '5px 10px',
+              width: '25%',
             }}
             onClick={handleCancel}
           >

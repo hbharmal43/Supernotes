@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
 import axios from 'axios';
-import UserFileCard from '../components/UserFileCard'; // Adjust the path as needed
+import UserFileCard from '../components/UserFileCard';
 
 function MyNotesPage() {
   const [files, setFiles] = useState([]);
@@ -12,12 +12,15 @@ function MyNotesPage() {
     const fetchUserFiles = async () => {
       try {
         const token = localStorage.getItem('token');
+        
+        // Fetch files from the backend, assuming user-specific content is filtered server-side
         const response = await axios.get('http://localhost:5000/api/files/my-content', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
+        // Set the retrieved files in state
         setFiles(response.data);
         setLoading(false);
       } catch (err) {
@@ -83,4 +86,3 @@ function MyNotesPage() {
 }
 
 export default MyNotesPage;
-
