@@ -1,8 +1,12 @@
+import express from 'express';
+import multer from 'multer';
 import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import dotenv from 'dotenv';
-import path from 'path';
 import { File } from '../models/fileModel.js';
+import path from 'path';
+import { verifyToken } from '../middleware/verifyToken.js'; // Import your token verification middleware
+
 
 dotenv.config();
 
@@ -80,7 +84,7 @@ export const uploadFile = async (req, res) => {
             description: req.body.description,
             tags: req.body.tags.split(','),
             courseNumber,
-            filePath: s3Key,
+            filePath: `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${s3Key}`,
             uploadedBy: userId,
         });
 
@@ -109,6 +113,7 @@ export const deleteFile = async (req, res) => {
         if (!file) {
             return res.status(404).json({ success: false, message: 'File not found or unauthorized.' });
         }
+
 
         // Delete the file from S3
         const deleteParams = {
