@@ -1,9 +1,8 @@
-
-import React, { useState, useEffect, useRef } from 'react';
-import Sidebar from '../components/Sidebar';
+import React, { useState, useEffect, useRef } from "react";
+import Sidebar from "../components/Sidebar";
 import FileCard from "../components/FileCard"; // Import FileCard component
-import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import axios from "axios";
+import { useParams } from "react-router-dom";
 
 function CourseFilesPage() {
   const { courseNumber } = useParams();
@@ -96,7 +95,7 @@ function CourseFilesPage() {
 
           {/* Files List */}
           {!error && !loading && files.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {files.map((file) => (
                 <FileCard
                   key={file._id}
@@ -109,7 +108,7 @@ function CourseFilesPage() {
                   <div className="mt-2 mb-2 w-full h-40">
                     {file.filePath.endsWith(".pdf") ? (
                       <img
-                        src={`https://via.placeholder.com/150/0000FF/FFFFFF?text=PDF`}
+                        src="https://via.placeholder.com/150/0000FF/FFFFFF?text=PDF"
                         alt={file.fileName}
                         className="w-full h-full object-cover rounded"
                       />
@@ -122,7 +121,7 @@ function CourseFilesPage() {
                     )}
                   </div>
 
-                  <div className="mt-auto w-half flex justify-between items-center">
+                  <div className="mt-auto w-full flex justify-between items-center">
                     <button
                       onClick={() => handleViewFile(file)}
                       className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 transition whitespace-nowrap mr-2"
@@ -170,7 +169,7 @@ function CourseFilesPage() {
                       )}
                     </div>
                   </div>
-                </div>
+                </FileCard>
               ))}
             </div>
           ) : (
