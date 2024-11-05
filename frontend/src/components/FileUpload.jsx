@@ -69,7 +69,14 @@ function FileUpload() {
 
   return (
     <div className="bg-white p-3 rounded">
+<<<<<<< HEAD
       <h2 className="text-center" style={{ color: "#4a90e2", fontWeight: "bold", fontSize: "24px" }}>
+=======
+      <h2
+        className="text-center"
+        style={{ color: "#4a90e2", fontWeight: "bold", fontSize: "24px" }}
+      >
+>>>>>>> 270774e738df28c30dd7fd75e19d880cee026025
         File Upload
       </h2>
       <form onSubmit={handleSubmit}>
@@ -80,7 +87,11 @@ function FileUpload() {
             className="form-control"
             value={fileName}
             onChange={(e) => setFileName(e.target.value)}
+<<<<<<< HEAD
             style={{ border: '2px solid #ccc', width: '90%', margin: '0 auto' }}
+=======
+            style={{ border: "2px solid #ccc", width: "90%", margin: "0 auto" }} // Subtle gray border
+>>>>>>> 270774e738df28c30dd7fd75e19d880cee026025
           />
         </div>
         <div className="mb-3">
@@ -89,7 +100,11 @@ function FileUpload() {
             className="form-control"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+<<<<<<< HEAD
             style={{ border: '2px solid #ccc', width: '90%', margin: '0 auto' }}
+=======
+            style={{ border: "2px solid #ccc", width: "90%", margin: "0 auto" }} // Subtle gray border
+>>>>>>> 270774e738df28c30dd7fd75e19d880cee026025
           />
         </div>
         <div className="mb-3">
@@ -99,7 +114,11 @@ function FileUpload() {
             className="form-control"
             value={tags}
             onChange={(e) => setTags(e.target.value)}
+<<<<<<< HEAD
             style={{ border: '2px solid #ccc', width: '90%', margin: '0 auto' }}
+=======
+            style={{ border: "2px solid #ccc", width: "90%", margin: "0 auto" }} // Subtle gray border
+>>>>>>> 270774e738df28c30dd7fd75e19d880cee026025
           />
         </div>
         <div className="mb-3">
@@ -109,7 +128,11 @@ function FileUpload() {
             className="form-control"
             value={courseNumber}
             onChange={(e) => setCourseNumber(e.target.value)}
+<<<<<<< HEAD
             style={{ border: '2px solid #ccc', width: '90%', margin: '0 auto' }}
+=======
+            style={{ border: "2px solid #ccc", width: "90%", margin: "0 auto" }} // Subtle gray border
+>>>>>>> 270774e738df28c30dd7fd75e19d880cee026025
           />
         </div>
         <div className="mb-3">
@@ -124,12 +147,21 @@ function FileUpload() {
             type="submit"
             className="btn"
             style={{
+<<<<<<< HEAD
               backgroundColor: '#3b82f6',
               color: '#333',
               borderRadius: '15px',
               border: 'none',
               padding: '5px 10px',
               width: '25%',
+=======
+              backgroundColor: "#3b82f6", // Vibrant pastel green
+              color: "#333",
+              borderRadius: "15px", // Rounded corners
+              border: "none", // No border
+              padding: "5px 10px", // Reduced padding for smaller buttons
+              width: "25%", // Set a width for smaller buttons
+>>>>>>> 270774e738df28c30dd7fd75e19d880cee026025
             }}
           >
             Upload
@@ -138,12 +170,21 @@ function FileUpload() {
             type="button"
             className="btn"
             style={{
+<<<<<<< HEAD
               backgroundColor: '#ef4444',
               color: '#333',
               borderRadius: '15px',
               border: 'none',
               padding: '5px 10px',
               width: '25%',
+=======
+              backgroundColor: "#ef4444", // Vibrant pastel red
+              color: "#333",
+              borderRadius: "15px", // Rounded corners
+              border: "none", // No border
+              padding: "5px 10px", // Reduced padding for smaller buttons
+              width: "25%", // Set a width for smaller buttons
+>>>>>>> 270774e738df28c30dd7fd75e19d880cee026025
             }}
             onClick={handleCancel}
           >
@@ -153,7 +194,10 @@ function FileUpload() {
       </form>
 
       {message && (
-        <p className="text-center mt-3" style={{ color: message.includes("successfully") ? "green" : "red" }}>
+        <p
+          className="text-center mt-3"
+          style={{ color: message.includes("successfully") ? "green" : "red" }}
+        >
           {message}
         </p>
       )}
