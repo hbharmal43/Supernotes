@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from "react";
 
 function UserFileCard({ file, handleViewFile, deleteFile }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -30,9 +30,9 @@ function UserFileCard({ file, handleViewFile, deleteFile }) {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -40,11 +40,10 @@ function UserFileCard({ file, handleViewFile, deleteFile }) {
     <div className="bg-white p-4 rounded-lg shadow-lg flex flex-col items-center w-full h-full">
       <h3 className="text-md font-semibold text-center">{file.fileName}</h3>
       <div className="mt-2 mb-2 w-full">
-        {file.filePath.endsWith('.pdf') ? (
+        {file.filePath.endsWith(".pdf") ? (
           <img
             src={`https://via.placeholder.com/150/0000FF/FFFFFF?text=PDF`}
             alt={file.fileName}
-            alt={file.filePath}
             className="w-full h-auto object-cover rounded"
           />
         ) : (
@@ -107,4 +106,3 @@ function UserFileCard({ file, handleViewFile, deleteFile }) {
 }
 
 export default UserFileCard;
-
