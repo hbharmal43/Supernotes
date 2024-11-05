@@ -5,6 +5,7 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import dotenv from 'dotenv';
 import { File } from '../models/fileModel.js';
 import path from 'path';
+import nodemailer from 'nodemailer';
 import { verifyToken } from '../middleware/verifyToken.js'; // Import your token verification middleware
 
 dotenv.config();
@@ -18,6 +19,41 @@ const s3 = new S3Client({
         accessKeyId: process.env.AWS_ACCESS_KEY_ID,
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     },
+});
+
+// Setup Nodemailer transporter
+const transporter = nodemailer.createTransport({
+    service: 'gmail', // You can also use other services or SMTP settings
+    auth: {
+        user: process.env.EMAIL_USER, // Your email
+        pass: process.env.EMAIL_PASS, // Your email password or app-specific password
+    },
+});
+
+
+// Route to handle flagging a file
+router.post('/flag', async (req, res) => {
+    const { fileName } = req.body;
+    const { description } = req.body;
+    if (!description) {
+        return res.status(400).json({ message: "Description is required." });
+    }
+
+    // Email content
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: 'hasnainbharmal4@gmail.com',
+        subject: 'Flag Notification',
+        text:  `A user has raised a flag with the following issue:\n\n${description}`,
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        res.status(200).json({ message: 'Flag notification sent successfully.' });
+    } catch (error) {
+        console.error('Error sending email:', error);
+        res.status(500).json({ message: 'Failed to send flag notification.' });
+    }
 });
 
 // Multer configuration to store files in memory
@@ -41,9 +77,9 @@ router.post('/upload', verifyToken, (req, res) => { // Use verifyToken to authen
         const fileContent = req.file.buffer;
         const courseNumber = req.body.courseNumber;
         const fileName = req.body.fileName || `${Date.now()}`;
-        
+
         // Use courseNumber as folder name in the S3 Key
-        const s3Key = `${courseNumber}/${fileName}${path.extname(req.file.originalname)}`; 
+        const s3Key = `${courseNumber}/${fileName}${path.extname(req.file.originalname)}`;
 
         const params = {
             Bucket: process.env.AWS_BUCKET_NAME,
@@ -83,30 +119,30 @@ router.post('/upload', verifyToken, (req, res) => { // Use verifyToken to authen
 // Endpoint to get files by course number
 router.get('/files', async (req, res) => {
     const { courseNumber } = req.query;
-  
+
     const params = {
-      Bucket: process.env.AWS_BUCKET_NAME,
-      Prefix: `${courseNumber}/`, // Assumes each course has a folder in S3
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Prefix: `${courseNumber}/`, // Assumes each course has a folder in S3
     };
-  
+
     try {
-      // List objects in the specified course folder
-      const command = new ListObjectsV2Command(params);
-      const data = await s3.send(command);
-  
-      // Map each item to include a signed URL
-      const files = await Promise.all(data.Contents.map(async (item) => ({
-        fileName: item.Key.split('/').pop(),
-        filePath: await getSignedUrl(s3, new GetObjectCommand({
-          Bucket: process.env.AWS_BUCKET_NAME,
-          Key: item.Key,
-        }), { expiresIn: 3600 }), // Link expires in 1 hour
-      })));
-  
-      res.status(200).json(files);
+        // List objects in the specified course folder
+        const command = new ListObjectsV2Command(params);
+        const data = await s3.send(command);
+
+        // Map each item to include a signed URL
+        const files = await Promise.all(data.Contents.map(async (item) => ({
+            fileName: item.Key.split('/').pop(),
+            filePath: await getSignedUrl(s3, new GetObjectCommand({
+                Bucket: process.env.AWS_BUCKET_NAME,
+                Key: item.Key,
+            }), { expiresIn: 3600 }), // Link expires in 1 hour
+        })));
+
+        res.status(200).json(files);
     } catch (error) {
-      console.error("Error fetching files from S3:", error);
-      res.status(500).json({ error: 'Error fetching files' });
+        console.error("Error fetching files from S3:", error);
+        res.status(500).json({ error: 'Error fetching files' });
     }
 });
 
