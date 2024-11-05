@@ -79,7 +79,7 @@ function UserFileCard({ file, handleViewFile, deleteFile }) {
       {dropdownOpen && (
         <div
           ref={dropdownRef}
-          className="absolute bg-white border rounded shadow-lg mt-1 z-10 w-full"
+          className="absolute bg-white border rounded shadow-lg mt-1 z-10 w-half"
         >
           <button
             onClick={handleFlag}
