@@ -49,7 +49,7 @@ const FileCard = ({ file, handleViewFile }) => {
       <div className="mt-auto w-full flex gap-2 justify-between items-center">
         <button
           onClick={() => handleViewFile(file)}
-          className="bg-blue-500 text-white flex-1 py-1 rounded hover:bg-blue-600 transition"
+          className="bg-blue-500 text-white flex-1 py-1 px-3 rounded hover:bg-blue-600 transition"
         >
           View File
         </button>

@@ -1,14 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
+import UserFileCard from '../components/UserFileCard'; // Adjust the path as needed
 import axios from 'axios';
-import UserFileCard from '../components/UserFileCard';
+import { useParams } from 'react-router-dom';
 
 function MyNotesPage() {
+  const { courseNumber } = useParams();
   const [files, setFiles] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [viewingFile, setViewingFile] = useState(null);
+  const [dropdownOpen, setDropdownOpen] = useState(null);
+  const viewerRef = useRef(null);
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
+    // Fetch files related to the user
     const fetchUserFiles = async () => {
       try {
         const token = localStorage.getItem('token');
@@ -31,6 +38,27 @@ function MyNotesPage() {
     };
 
     fetchUserFiles();
+  }, []);
+
+  const handleViewFile = (file) => {
+    setViewingFile(file); // Set the file to be viewed
+  };
+
+  const handleCloseViewer = () => {
+    setViewingFile(null); // Close the viewer
+  };
+
+  const handleClickOutside = (event) => {
+    if (viewerRef.current && !viewerRef.current.contains(event.target)) {
+      handleCloseViewer();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
   const deleteFile = async (fileId) => {
@@ -71,7 +99,7 @@ function MyNotesPage() {
                 <UserFileCard
                   key={file._id}
                   file={file}
-                  handleViewFile={(file) => window.open(file.filePath, '_blank')}
+                  handleViewFile={handleViewFile}
                   deleteFile={deleteFile}
                 />
               ))}
@@ -80,6 +108,26 @@ function MyNotesPage() {
             !loading && <p className="text-center text-gray-500">No notes available.</p>
           )}
         </div>
+
+        {/* PDF Viewer */}
+        {viewingFile && (
+          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+            <div className="bg-white p-4 rounded shadow-lg relative" ref={viewerRef}>
+              <button
+                onClick={handleCloseViewer}
+                className="absolute top-2 right-2 text-red-500 font-bold"
+              >
+                X
+              </button>
+              <iframe
+                src={viewingFile.filePath}
+                width="600"
+                height="800"
+                title="PDF Viewer"
+              ></iframe>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
