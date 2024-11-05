@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 function PdfListPage() {
   const [files, setFiles] = useState([]);
@@ -7,7 +7,7 @@ function PdfListPage() {
 
   useEffect(() => {
     const fetchFiles = async () => {
-      const response = await axios.get('http://localhost:5000/api/files');
+      const response = await axios.get("http://localhost:5000/api/files");
       setFiles(response.data);
     };
     fetchFiles();
@@ -24,11 +24,11 @@ function PdfListPage() {
   return (
     <div>
       <h1>Files List</h1>
-      {files.map(file => (
+      {files.map((file) => (
         <div key={file._id} className="mb-4">
           <p>{file.fileName}</p>
           <p>{file.description}</p>
-          <p>{file.tags.join(', ')}</p>
+          <p>{file.tags.join(", ")}</p>
 
           {/* View Link */}
           <button
