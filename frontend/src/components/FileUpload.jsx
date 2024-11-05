@@ -32,7 +32,7 @@ function FileUpload() {
     try {
       // Send form data to backend
       const response = await axios.post(
-        "http://localhost:5000/api/upload", // Ensure this matches your backend URL
+        "http://localhost:5001/api/upload", // Ensure this matches your backend URL
         formData,
         {
           headers: {
@@ -68,8 +68,11 @@ function FileUpload() {
   };
 
   return (
-      <div className="bg-white p-3 rounded">
-      <h2 className="text-center" style={{ color: "#4a90e2", fontWeight: "bold",fontSize: "24px" }}>
+    <div className="bg-white p-3 rounded">
+      <h2
+        className="text-center"
+        style={{ color: "#4a90e2", fontWeight: "bold", fontSize: "24px" }}
+      >
         File Upload
       </h2>
       <form onSubmit={handleSubmit}>
@@ -80,7 +83,7 @@ function FileUpload() {
             className="form-control"
             value={fileName}
             onChange={(e) => setFileName(e.target.value)}
-            style={{ border: '2px solid #ccc', width: '90%', margin: '0 auto' }} // Subtle gray border
+            style={{ border: "2px solid #ccc", width: "90%", margin: "0 auto" }} // Subtle gray border
           />
         </div>
         <div className="mb-3">
@@ -89,7 +92,7 @@ function FileUpload() {
             className="form-control"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            style={{ border: '2px solid #ccc', width: '90%', margin: '0 auto' }} // Subtle gray border
+            style={{ border: "2px solid #ccc", width: "90%", margin: "0 auto" }} // Subtle gray border
           />
         </div>
         <div className="mb-3">
@@ -99,7 +102,7 @@ function FileUpload() {
             className="form-control"
             value={tags}
             onChange={(e) => setTags(e.target.value)}
-            style={{ border: '2px solid #ccc', width: '90%', margin: '0 auto' }} // Subtle gray border
+            style={{ border: "2px solid #ccc", width: "90%", margin: "0 auto" }} // Subtle gray border
           />
         </div>
         <div className="mb-3">
@@ -109,7 +112,7 @@ function FileUpload() {
             className="form-control"
             value={courseNumber}
             onChange={(e) => setCourseNumber(e.target.value)}
-            style={{ border: '2px solid #ccc', width: '90%', margin: '0 auto' }} // Subtle gray border
+            style={{ border: "2px solid #ccc", width: "90%", margin: "0 auto" }} // Subtle gray border
           />
         </div>
         <div className="mb-3">
@@ -124,12 +127,12 @@ function FileUpload() {
             type="submit"
             className="btn"
             style={{
-              backgroundColor: '#3b82f6', // Vibrant pastel green
-              color: '#333',
-              borderRadius: '15px', // Rounded corners
-              border: 'none', // No border
-              padding: '5px 10px', // Reduced padding for smaller buttons
-              width: '25%', // Set a width for smaller buttons
+              backgroundColor: "#3b82f6", // Vibrant pastel green
+              color: "#333",
+              borderRadius: "15px", // Rounded corners
+              border: "none", // No border
+              padding: "5px 10px", // Reduced padding for smaller buttons
+              width: "25%", // Set a width for smaller buttons
             }}
           >
             Upload
@@ -138,12 +141,12 @@ function FileUpload() {
             type="button"
             className="btn"
             style={{
-              backgroundColor: '#ef4444', // Vibrant pastel red
-              color: '#333',
-              borderRadius: '15px', // Rounded corners
-              border: 'none', // No border
-              padding: '5px 10px', // Reduced padding for smaller buttons
-              width: '25%', // Set a width for smaller buttons
+              backgroundColor: "#ef4444", // Vibrant pastel red
+              color: "#333",
+              borderRadius: "15px", // Rounded corners
+              border: "none", // No border
+              padding: "5px 10px", // Reduced padding for smaller buttons
+              width: "25%", // Set a width for smaller buttons
             }}
             onClick={handleCancel}
           >
@@ -153,7 +156,10 @@ function FileUpload() {
       </form>
 
       {message && (
-        <p className="text-center mt-3" style={{ color: message.includes("successfully") ? "green" : "red" }}>
+        <p
+          className="text-center mt-3"
+          style={{ color: message.includes("successfully") ? "green" : "red" }}
+        >
           {message}
         </p>
       )}
