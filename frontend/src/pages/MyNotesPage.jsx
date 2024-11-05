@@ -18,16 +18,14 @@ function MyNotesPage() {
     // Fetch files related to the user
     const fetchUserFiles = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          "http://localhost:5000/api/files/my-content",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const token = localStorage.getItem('token');
+        const response = await axios.get('http://localhost:5000/api/files/my-content', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
+        // Set the retrieved files in state
         setFiles(response.data);
         setLoading(false);
       } catch (err) {
