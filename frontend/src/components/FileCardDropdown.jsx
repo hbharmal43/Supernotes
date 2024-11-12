@@ -1,8 +1,26 @@
 import React from "react";
+import axios from "axios";
 
 const FileCardDropdown = ({ isOpen, toggleDropdown, fileId }) => {
+  const handleFlag = async () => {
+    const description = prompt("Please describe the issue with this file and mention the filename too:");
+    if (description) {
+      try {
+        await axios.post("http://localhost:5000/api/flag", { description });
+        alert("Flag raised and notification sent.");
+      } catch (error) {
+        console.error("Error sending flag notification:", error);
+        alert("Failed to send the flag notification. Please try again.");
+      }
+    }
+  };
+
   const handleAction = (action) => {
-    console.log(`${action} file with ID: ${fileId}`);
+    if (action === "Flagged") {
+      handleFlag();
+    } else {
+      console.log(`${action} file with ID: ${fileId}`);
+    }
     toggleDropdown(); // Close dropdown after action
   };
 
@@ -10,7 +28,7 @@ const FileCardDropdown = ({ isOpen, toggleDropdown, fileId }) => {
     <div>
       <button
         onClick={toggleDropdown}
-        className="bg-gray-500 text-white px-2 py-1 rounded hover:bg-gray-600 transition w-10"
+        className="bg-gray-500 text-white px-2 py-1 rounded hover:bg-gray-600 transition z-10"
       >
         Options
       </button>

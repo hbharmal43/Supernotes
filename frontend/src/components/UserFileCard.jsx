@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from "react";
 
 function UserFileCard({ file, handleViewFile, deleteFile }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -10,17 +10,14 @@ function UserFileCard({ file, handleViewFile, deleteFile }) {
 
   const handleFlag = () => {
     console.log(`Flagged note with ID: ${file._id}`);
-    // Add logic for flagging
   };
 
   const handleSave = () => {
     console.log(`Saved note with ID: ${file._id}`);
-    // Add logic for saving
   };
 
   const handleComment = () => {
     console.log(`Commented on note with ID: ${file._id}`);
-    // Add logic for commenting
   };
 
   useEffect(() => {
@@ -30,9 +27,9 @@ function UserFileCard({ file, handleViewFile, deleteFile }) {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -40,7 +37,7 @@ function UserFileCard({ file, handleViewFile, deleteFile }) {
     <div className="bg-white p-4 rounded-lg shadow-lg flex flex-col items-center w-full h-full">
       <h3 className="text-md font-semibold text-center">{file.fileName}</h3>
       <div className="mt-2 mb-2 w-full">
-        {file.filePath.endsWith('.pdf') ? (
+        {file.filePath && file.filePath.endsWith(".pdf") ? (
           <img
             src={`https://via.placeholder.com/150/0000FF/FFFFFF?text=PDF`}
             alt={file.fileName}
@@ -56,7 +53,10 @@ function UserFileCard({ file, handleViewFile, deleteFile }) {
       </div>
       <div className="mt-auto flex justify-between space-x-2 w-full">
         <button
-          onClick={() => handleViewFile(file)}
+          onClick={() => {
+            console.log("Attempting to open:", file.filePath);
+            handleViewFile(file);
+          }}
           className="bg-blue-500 text-white flex-1 px-2 py-1 rounded hover:bg-blue-600 transition"
         >
           View
@@ -106,4 +106,3 @@ function UserFileCard({ file, handleViewFile, deleteFile }) {
 }
 
 export default UserFileCard;
-

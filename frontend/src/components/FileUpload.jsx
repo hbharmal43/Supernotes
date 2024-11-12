@@ -3,11 +3,11 @@ import axios from "axios";
 
 function FileUpload() {
   const [file, setFile] = useState(null);
-  const [fileName, setFileName] = useState(""); // User-provided file name
+  const [fileName, setFileName] = useState("");
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState("");
-  const [courseNumber, setCourseNumber] = useState(""); // New state for course number
-  const [message, setMessage] = useState(""); // State to store success/error message
+  const [courseNumber, setCourseNumber] = useState("");
+  const [message, setMessage] = useState("");
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -16,30 +16,28 @@ function FileUpload() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const courseNumberPattern = /^[A-Za-z]+-\d+$/;
+    if (!courseNumberPattern.test(courseNumber)) {
+      setMessage("Course Number format should be COURSENAME-NUMBER (e.g., CSE-3315).");
+      return;
+    }
+
     if (!file || !fileName || !description || !tags || !courseNumber) {
       setMessage("Please fill in all fields.");
       return;
     }
 
-    // Prepare form data
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("fileName", fileName); // Add the file name
+    formData.append("fileName", fileName);
     formData.append("description", description);
     formData.append("tags", tags);
-    formData.append("courseNumber", courseNumber); // Add the course number
+    formData.append("courseNumber", courseNumber);
 
     try {
-      // Send form data to backend
-      const response = await axios.post(
-        "http://localhost:5000/api/upload", // Ensure this matches your backend URL
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axios.post("http://localhost:5000/api/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
       if (response.data.success) {
         setMessage(`File uploaded successfully for course ${courseNumber}!`);
@@ -55,8 +53,7 @@ function FileUpload() {
 
   const handleCancel = () => {
     resetForm();
-    setMessage(""); // Clear the message on cancel
-    navigate(-1); // Navigate back to the previous page
+    setMessage("");
   };
 
   const resetForm = () => {
@@ -64,102 +61,63 @@ function FileUpload() {
     setFileName("");
     setDescription("");
     setTags("");
-    setCourseNumber(""); // Reset course number
+    setCourseNumber("");
   };
 
   return (
-    <div className="bg-white p-3 rounded">
-      <h2
-        className="text-center"
-        style={{ color: "#4a90e2", fontWeight: "bold", fontSize: "24px" }}
-      >
-        File Upload
-      </h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <input
-            type="text"
-            placeholder="File Name"
-            className="form-control"
-            value={fileName}
-            onChange={(e) => setFileName(e.target.value)}
-            style={{ border: "2px solid #ccc", width: "90%", margin: "0 auto" }} // Subtle gray border
-          />
-        </div>
-        <div className="mb-3">
-          <textarea
-            placeholder="Description"
-            className="form-control"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            style={{ border: "2px solid #ccc", width: "90%", margin: "0 auto" }} // Subtle gray border
-          />
-        </div>
-        <div className="mb-3">
-          <input
-            type="text"
-            placeholder="Tags (comma-separated)"
-            className="form-control"
-            value={tags}
-            onChange={(e) => setTags(e.target.value)}
-            style={{ border: "2px solid #ccc", width: "90%", margin: "0 auto" }} // Subtle gray border
-          />
-        </div>
-        <div className="mb-3">
-          <input
-            type="text"
-            placeholder="Course Number (e.g., CSE-3315)"
-            className="form-control"
-            value={courseNumber}
-            onChange={(e) => setCourseNumber(e.target.value)}
-            style={{ border: "2px solid #ccc", width: "90%", margin: "0 auto" }} // Subtle gray border
-          />
-        </div>
-        <div className="mb-3">
-          <input
-            type="file"
-            className="form-control"
-            onChange={handleFileChange}
-          />
-        </div>
-        <div className="d-flex justify-content-between">
+    <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg mx-auto">
+      <h2 className="text-center text-2xl font-bold text-blue-500 mb-4">File Upload</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <input
+          type="text"
+          placeholder="File Name"
+          className="form-input w-full border border-gray-300 rounded p-2"
+          value={fileName}
+          onChange={(e) => setFileName(e.target.value)}
+        />
+        <textarea
+          placeholder="Description"
+          className="form-textarea w-full border border-gray-300 rounded p-2"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Tags (comma-separated)"
+          className="form-input w-full border border-gray-300 rounded p-2"
+          value={tags}
+          onChange={(e) => setTags(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Course Number (e.g., COURSENAME-NUMBER)"
+          className="form-input w-full border border-gray-300 rounded p-2"
+          value={courseNumber}
+          onChange={(e) => setCourseNumber(e.target.value)}
+        />
+        <input
+          type="file"
+          className="form-input w-full border border-gray-300 rounded p-2"
+          onChange={handleFileChange}
+        />
+        <div className="flex justify-between mt-4">
           <button
             type="submit"
-            className="btn"
-            style={{
-              backgroundColor: "#3b82f6", // Vibrant pastel green
-              color: "#333",
-              borderRadius: "15px", // Rounded corners
-              border: "none", // No border
-              padding: "5px 10px", // Reduced padding for smaller buttons
-              width: "25%", // Set a width for smaller buttons
-            }}
+            className="bg-blue-500 text-white py-2 px-4 rounded-lg w-5/12 hover:bg-blue-600 transition"
           >
             Upload
           </button>
           <button
             type="button"
-            className="btn"
-            style={{
-              backgroundColor: "#ef4444", // Vibrant pastel red
-              color: "#333",
-              borderRadius: "15px", // Rounded corners
-              border: "none", // No border
-              padding: "5px 10px", // Reduced padding for smaller buttons
-              width: "25%", // Set a width for smaller buttons
-            }}
+            className="bg-red-500 text-white py-2 px-4 rounded-lg w-5/12 hover:bg-red-600 transition"
             onClick={handleCancel}
           >
             Cancel
           </button>
         </div>
       </form>
-
       {message && (
-        <p
-          className="text-center mt-3"
-          style={{ color: message.includes("successfully") ? "green" : "red" }}
-        >
+        <p className={`text-center mt-4 ${message.includes("successfully") ? "text-green-500" : "text-red-500"}`}>
           {message}
         </p>
       )}
