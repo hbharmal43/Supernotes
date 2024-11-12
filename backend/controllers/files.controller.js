@@ -35,6 +35,13 @@ export const getUserContent = async (req, res) => {
             return res.status(404).json({ success: false, message: 'No files found for this user.' });
         }
 
+        const { courseNumber } = req.query;
+  
+        const params = {
+          Bucket: process.env.AWS_BUCKET_NAME,
+          Prefix: `${courseNumber}/`, // Assumes each course has a folder in S3
+        };
+
         // Map each item to include a signed URL
         const files = await Promise.all(userFiles.map(async (file) => ({
             fileName: file.fileName,

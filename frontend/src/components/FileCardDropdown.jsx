@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
+import CommentOverlay from "./CommentOverlay"; // Import the CommentOverlay component
 
 const FileCardDropdown = ({ isOpen, toggleDropdown, fileId }) => {
+  const [isCommenting, setIsCommenting] = useState(false); // State to manage comment overlay visibility
+
   const handleFlag = async () => {
     const description = prompt("Please describe the issue with this file and mention the filename too:");
     if (description) {
@@ -18,10 +21,16 @@ const FileCardDropdown = ({ isOpen, toggleDropdown, fileId }) => {
   const handleAction = (action) => {
     if (action === "Flagged") {
       handleFlag();
+    } else if (action === "Commented") {
+      setIsCommenting(true); // Show the comment overlay when "Comment" is clicked
     } else {
       console.log(`${action} file with ID: ${fileId}`);
     }
     toggleDropdown(); // Close dropdown after action
+  };
+
+  const closeOverlay = () => {
+    setIsCommenting(false); // Close the overlay when "Cancel" or "Submit" is clicked in CommentOverlay
   };
 
   return (
@@ -55,8 +64,13 @@ const FileCardDropdown = ({ isOpen, toggleDropdown, fileId }) => {
           </button>
         </div>
       )}
+
+      {isCommenting && (
+        <CommentOverlay fileId={fileId} onClose={closeOverlay} />
+      )}
     </div>
   );
 };
 
 export default FileCardDropdown;
+
