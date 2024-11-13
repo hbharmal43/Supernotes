@@ -3,24 +3,22 @@ import {
 	login,
 	logout,
 	signup,
-	verifyEmail,
 	forgotPassword,
 	resetPassword,
 	checkAuth,
 } from "../controllers/auth.controller.js";
-import { verifyToken } from "../middleware/verifyToken.js";
 
 const router = express.Router();
 
-router.get("/check-auth", verifyToken, checkAuth);
+// No need for verifyToken middleware or verifyEmail route
+router.get("/check-auth", checkAuth); // This will just respond if the server is up
 
 router.post("/signup", signup);
 router.post("/login", login);
 router.post("/logout", logout);
 
-router.post("/verify-email", verifyEmail);
+// Optional: Remove if password reset is not needed
 router.post("/forgot-password", forgotPassword);
-
 router.post("/reset-password/:token", resetPassword);
 
 export default router;
