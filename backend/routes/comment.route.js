@@ -1,82 +1,194 @@
 import express from 'express';
-import { Comment } from '../models/commentModel.js'; // Import the Comment model
-import { verifyToken } from '../middleware/verifyToken.js'; // Import your token verification middleware
+import multer from 'multer';
+import { S3Client, PutObjectCommand, ListObjectsV2Command, GetObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import dotenv from 'dotenv';
+import { Comment } from '../models/commentModel.js'; // Import Comment model
+import { File } from '../models/fileModel.js'; // Import File model
+import { verifyToken } from '../middleware/verifyToken.js';
+
+dotenv.config();
 
 const router = express.Router();
 
-// Route to add a new comment to a file
-router.post('/add', verifyToken, async (req, res) => {
-    const { fileId, commentText } = req.body;
+// Initialize S3 client
+const s3 = new S3Client({
+    region: process.env.AWS_REGION,
+    credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    },
+});
 
-    // Validate input
-    if (!fileId || !commentText) {
-        return res.status(400).json({ message: "File ID and comment text are required." });
+// Multer configuration for file upload
+const storage = multer.memoryStorage();
+const upload = multer({ storage }).single('file'); // This will store files in memory
+
+// Route to add a comment
+router.post('/add', verifyToken, async (req, res) => {
+    const { fileId, fileName, commentText } = req.body;
+
+    // Validate the input
+    if (!commentText) {
+        return res.status(400).json({ message: 'Comment text is required.' });
+    }
+    if (!fileId && !fileName) {
+        return res.status(400).json({ message: 'File ID or File Name is required.' });
     }
 
     try {
-        console.log("Received fileId:", fileId); // Log the received fileId
-        console.log("Received commentText:", commentText); // Log the received commentText
+        let file;
 
-        // Create a new comment and link it to the file and the user
-        const comment = new Comment({
-            commentID: `comment-${Date.now()}`, // Generate a unique ID based on timestamp
-            content: commentText, // The content of the comment
-            userId: req.userId,  // The user who is adding the comment
-            fileId,              // The file the comment is linked to
+        // Find the file by fileId or fileName
+        if (fileId) {
+            file = await File.findById(fileId); // Use fileId to find the file
+        } else if (fileName) {
+            file = await File.findOne({ fileName }); // Use fileName to find the file
+        }
+
+        if (!file) {
+            return res.status(404).json({ message: 'File not found.' });
+        }
+
+        // Create a new comment and associate it with the file
+        const newComment = new Comment({
+            fileId: file._id, // Store file's MongoDB _id in the comment
+            fileName: file.fileName, // Optionally, store fileName too
+            commentText,
+            createdAt: new Date(),
         });
 
-        await comment.save();
+        await newComment.save();
 
-        res.status(201).json({
-            message: 'Comment added successfully',
-            comment,
-        });
-    } catch (error) {
-        console.error('Error adding comment:', error); // Log error message
-        res.status(500).json({ message: 'Failed to add comment.' });
+        // Optionally, you could also add the comment to the File's comment array
+        file.comments.push(newComment._id);
+        await file.save();
+
+        res.status(201).json({ message: 'Comment added successfully' });
+    } catch (err) {
+        console.error('Error adding comment:', err);
+        res.status(500).json({ message: 'Error adding comment', error: err.message });
     }
 });
 
-// Route to get all comments for a specific file
+// Route to fetch comments for a file
 router.get('/:fileId', async (req, res) => {
     const { fileId } = req.params;
 
     try {
-        // Find comments for the given file
-        const comments = await Comment.find({ fileId }) // Filter by fileId
-            .populate('userId', 'name email'); // Optionally populate user info
+        // Find the file and populate its comments
+        const file = await File.findById(fileId).populate('comments');
+        if (!file) {
+            return res.status(404).json({ message: 'File not found' });
+        }
 
-        res.status(200).json({ comments });
-    } catch (error) {
-        console.error('Error fetching comments:', error); // Log error
-        res.status(500).json({ message: 'Failed to fetch comments.' });
+        res.status(200).json({ comments: file.comments });
+    } catch (err) {
+        console.error('Error fetching comments:', err);
+        res.status(500).json({ message: 'Error fetching comments', error: err.message });
     }
 });
 
-// Route to delete a comment (only for the user who posted it or an admin)
-router.delete('/:commentId', verifyToken, async (req, res) => {
-    const { commentId } = req.params;
+// Route to upload file (if you're storing metadata or related file information to S3)
+router.post('/upload', verifyToken, (req, res) => {
+    upload(req, res, async (err) => {
+        if (err) {
+            console.error("Error during file upload:", err);
+            return res.status(500).json({ success: false, message: 'Error uploading file', error: err.message });
+        }
+
+        // Ensure the user is authenticated
+        const userId = req.userId;
+        if (!userId) {
+            return res.status(401).json({ success: false, message: 'User not authenticated' });
+        }
+
+        const fileContent = req.file.buffer;
+        const courseNumber = req.body.courseNumber;
+        const fileName = req.body.fileName || `${Date.now()}`;
+        const s3Key = `${courseNumber}/${fileName}${path.extname(req.file.originalname)}`;
+
+        const params = {
+            Bucket: process.env.AWS_BUCKET_NAME,
+            Key: s3Key,
+            Body: fileContent,
+            ContentType: req.file.mimetype,
+        };
+
+        try {
+            // Upload to S3
+            const command = new PutObjectCommand(params);
+            await s3.send(command);
+
+            // Save file metadata in MongoDB
+            const newFile = new File({
+                fileName: req.body.fileName,
+                description: req.body.description,
+                tags: req.body.tags.split(','),
+                courseNumber,
+                filePath: `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${s3Key}`,
+                uploadedBy: userId,
+            });
+
+            await newFile.save();
+
+            res.status(201).json({
+                success: true,
+                message: `File uploaded successfully for course ${courseNumber}!`,
+                file: s3Key,
+            });
+        } catch (uploadError) {
+            console.error("Error uploading file to S3:", uploadError);
+            res.status(500).json({ success: false, message: 'Error uploading to S3' });
+        }
+    });
+});
+
+// Endpoint to get files (similar to how you handle fetching files for a course)
+router.get('/files', async (req, res) => {
+    const { courseNumber } = req.query;
+
+    const params = {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Prefix: `${courseNumber}/`,
+    };
 
     try {
-        // Find the comment by ID
-        const comment = await Comment.findById(commentId);
+        const command = new ListObjectsV2Command(params);
+        const data = await s3.send(command);
 
-        // Check if the comment exists and if the user is allowed to delete it
-        if (!comment) {
-            return res.status(404).json({ message: 'Comment not found.' });
-        }
+        const files = await Promise.all(data.Contents.map(async (item) => ({
+            fileName: item.Key.split('/').pop(),
+            filePath: await getSignedUrl(s3, new GetObjectCommand({
+                Bucket: process.env.AWS_BUCKET_NAME,
+                Key: item.Key,
+            }), { expiresIn: 3600 }),
+        })));
 
-        // Ensure the user is either the owner of the comment or an admin
-        if (comment.userId.toString() !== req.userId && !req.isAdmin) { // Assuming req.isAdmin is set based on user role
-            return res.status(403).json({ message: 'Unauthorized to delete this comment.' });
-        }
-
-        await comment.remove();
-
-        res.status(200).json({ message: 'Comment deleted successfully.' });
+        res.status(200).json(files);
     } catch (error) {
-        console.error('Error deleting comment:', error); // Log error
-        res.status(500).json({ message: 'Failed to delete comment.' });
+        console.error("Error fetching files from S3:", error);
+        res.status(500).json({ error: 'Error fetching files' });
+    }
+});
+
+// Route to fetch courses from S3
+router.get('/courses', async (req, res) => {
+    try {
+        const params = {
+            Bucket: process.env.AWS_BUCKET_NAME,
+            Delimiter: '/',
+        };
+
+        const command = new ListObjectsV2Command(params);
+        const data = await s3.send(command);
+
+        const folderNames = data.CommonPrefixes ? data.CommonPrefixes.map((prefix) => prefix.Prefix.replace('/', '')) : [];
+
+        res.status(200).json(folderNames);
+    } catch (error) {
+        console.error("Error fetching folders from S3:", error);
+        res.status(500).json({ message: 'Error fetching course folders from S3' });
     }
 });
 

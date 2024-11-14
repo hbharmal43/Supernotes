@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import CommentOverlay from "./CommentOverlay";
 
 const Comments = ({ fileId }) => {
   const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [showOverlay, setShowOverlay] = useState(false); // To control overlay visibility
 
   // Fetch comments when the component mounts or fileId changes
   useEffect(() => {
@@ -16,7 +16,7 @@ const Comments = ({ fileId }) => {
         const response = await axios.get(`/api/comments/${fileId}`);
         setComments(response.data.comments);
       } catch (err) {
-        setError('Error fetching comments');
+        setError("Error fetching comments");
       } finally {
         setLoading(false);
       }
@@ -25,39 +25,36 @@ const Comments = ({ fileId }) => {
     fetchComments();
   }, [fileId]);
 
-  // Handle submitting a new comment
-  const handleAddComment = async () => {
-    if (!newComment.trim()) return;
-
-    setIsSubmitting(true);
+  // Handle adding a new comment
+  const handleAddComment = async (commentText) => {
     try {
       const response = await axios.post(
-        '/api/comments/add',
-        {
-          fileId,
-          commentText: newComment,
-        },
+        "/api/comments/add",
+        { fileId, commentText },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
 
-      setComments((prevComments) => [...prevComments, response.data.comment]); // Add the new comment
-      setNewComment(''); // Clear the input field
-    } catch (err) {
-      setError('Error posting comment');
-    } finally {
-      setIsSubmitting(false);
+      if (response.data.success) {
+        setComments((prevComments) => [
+          ...prevComments,
+          response.data.comment,
+        ]);
+      } else {
+        alert("Failed to post comment. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error posting comment:", error);
+      alert("An error occurred while posting the comment.");
     }
   };
 
   return (
     <div>
       <h2>Comments</h2>
-      {error && <p className="error">{error}</p>}
-
       {loading ? (
         <p>Loading comments...</p>
       ) : (
@@ -75,16 +72,20 @@ const Comments = ({ fileId }) => {
             )}
           </div>
 
-          <div className="add-comment">
-            <textarea
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              placeholder="Add a comment"
+          <button
+            onClick={() => setShowOverlay(true)}
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Add Comment
+          </button>
+
+          {showOverlay && (
+            <CommentOverlay
+              fileId={fileId}
+              onClose={() => setShowOverlay(false)} // Close the overlay
+              onSubmit={handleAddComment} // Pass the function to handle comment submission
             />
-            <button onClick={handleAddComment} disabled={isSubmitting}>
-              {isSubmitting ? 'Posting...' : 'Post Comment'}
-            </button>
-          </div>
+          )}
         </>
       )}
     </div>
