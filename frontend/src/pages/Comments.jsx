@@ -1,92 +1,110 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const Comments = ({ fileId }) => {
+const Comments = ({ noteId }) => {
+  const [commentText, setCommentText] = useState('');
   const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(null);
 
-  // Fetch comments when the component mounts or fileId changes
+  // Fetch comments when the component is mounted or the noteId changes
   useEffect(() => {
     const fetchComments = async () => {
-      setLoading(true);
       try {
-        const response = await axios.get(`/api/comments/${fileId}`);
-        setComments(response.data.comments);
+        const response = await axios.get(
+          `http://localhost:5000/api/comments?noteId=${noteId}`
+        );
+        setComments(response.data.comments || []);
       } catch (err) {
-        setError('Error fetching comments');
-      } finally {
-        setLoading(false);
+        setError('Failed to load comments');
+        console.error('Error fetching comments:', err);
       }
     };
 
-    fetchComments();
-  }, [fileId]);
+    if (noteId) {
+      fetchComments();
+    }
+  }, [noteId]);
 
-  // Handle submitting a new comment
-  const handleAddComment = async () => {
-    if (!newComment.trim()) return;
+  // Handle adding a new comment
+  const handleAddComment = async (e) => {
+    e.preventDefault();
+    if (!commentText.trim()) {
+      alert('Please enter a comment.');
+      return;
+    }
 
-    setIsSubmitting(true);
     try {
       const response = await axios.post(
-        '/api/comments/add',
+        'http://localhost:5000/api/comments',
         {
-          fileId,
-          commentText: newComment,
+          noteId,
+          commentText,
         },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            Authorization: `Bearer ${localStorage.getItem('token')}`, // Assuming token is stored in localStorage
           },
         }
       );
 
-      setComments((prevComments) => [...prevComments, response.data.comment]); // Add the new comment
-      setNewComment(''); // Clear the input field
-    } catch (err) {
-      setError('Error posting comment');
-    } finally {
-      setIsSubmitting(false);
+      if (response.data.success) {
+        setCommentText('');
+        setComments((prevComments) => [
+          ...prevComments,
+          {
+            text: commentText,
+            createdBy: 'You', // Replace with actual username if needed
+            createdAt: new Date().toISOString(),
+          },
+        ]);
+      } else {
+        alert('Failed to add comment.');
+      }
+    } catch (error) {
+      console.error('Error adding comment:', error);
+      setError('Failed to add comment. Please try again.');
     }
   };
 
   return (
     <div>
-      <h2>Comments</h2>
-      {error && <p className="error">{error}</p>}
+      <h3>Comments</h3>
 
-      {loading ? (
-        <p>Loading comments...</p>
-      ) : (
-        <>
-          <div className="comments-list">
-            {comments.length > 0 ? (
-              comments.map((comment) => (
-                <div key={comment._id} className="comment">
-                  <p>{comment.commentText}</p>
-                  <small>By {comment.user.name}</small>
-                </div>
-              ))
-            ) : (
-              <p>No comments yet. Be the first to comment!</p>
-            )}
-          </div>
+      {/* Display any errors */}
+      {error && <p className="text-red-500">{error}</p>}
 
-          <div className="add-comment">
-            <textarea
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              placeholder="Add a comment"
-            />
-            <button onClick={handleAddComment} disabled={isSubmitting}>
-              {isSubmitting ? 'Posting...' : 'Post Comment'}
-            </button>
-          </div>
-        </>
-      )}
+      <form onSubmit={handleAddComment}>
+        <textarea
+          value={commentText}
+          onChange={(e) => setCommentText(e.target.value)}
+          placeholder="Add a comment..."
+          rows="4"
+          className="border p-2 w-full mb-2"
+        ></textarea>
+        <button
+          type="submit"
+          className="bg-blue-500 text-white px-4 py-2 rounded"
+        >
+          Add Comment
+        </button>
+      </form>
+
+      {/* Display comments */}
+      <div className="mt-4">
+        {comments.length > 0 ? (
+          <ul>
+            {comments.map((comment, index) => (
+              <li key={index} className="border-b py-2">
+                <p className="font-semibold">{comment.createdBy}</p>
+                <p>{comment.text}</p>
+                <small>{new Date(comment.createdAt).toLocaleString()}</small>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No comments yet.</p>
+        )}
+      </div>
     </div>
   );
 };

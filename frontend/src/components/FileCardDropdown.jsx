@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
-import CommentOverlay from "./CommentOverlay"; // Import the CommentOverlay component
+import { useNavigate } from "react-router-dom";
 
 const FileCardDropdown = ({ isOpen, toggleDropdown, fileId }) => {
-  const [isCommenting, setIsCommenting] = useState(false); // State to manage comment overlay visibility
+  const [isCommenting, setIsCommenting] = useState(false); // State to handle comment section visibility
+  const navigate = useNavigate();
 
   const handleFlag = async () => {
     const description = prompt(
@@ -23,16 +24,12 @@ const FileCardDropdown = ({ isOpen, toggleDropdown, fileId }) => {
   const handleAction = (action) => {
     if (action === "Flagged") {
       handleFlag();
-    } else if (action === "Commented") {
-      setIsCommenting(true); // Show the comment overlay when "Comment" is clicked
+    } else if (action === "Comment") {
+      navigate(`/comments/${fileId}`); // Navigate to the CommentsPage with the fileId
     } else {
       console.log(`${action} file with ID: ${fileId}`);
     }
     toggleDropdown(); // Close dropdown after action
-  };
-
-  const closeOverlay = () => {
-    setIsCommenting(false); // Close the overlay when "Cancel" or "Submit" is clicked in CommentOverlay
   };
 
   return (
@@ -59,16 +56,12 @@ const FileCardDropdown = ({ isOpen, toggleDropdown, fileId }) => {
             Save
           </button>
           <button
-            onClick={() => handleAction("Commented")}
+            onClick={() => handleAction("Comment")}
             className="block px-4 py-2 text-gray-800 hover:bg-gray-200"
           >
             Comment
           </button>
         </div>
-      )}
-
-      {isCommenting && (
-        <CommentOverlay fileId={fileId} onClose={closeOverlay} />
       )}
     </div>
   );

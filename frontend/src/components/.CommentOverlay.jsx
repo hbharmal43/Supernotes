@@ -1,38 +1,29 @@
 import React, { useState } from "react";
-import axios from "axios";
 
-const CommentOverlay = ({ fileId, onClose }) => {
+const CommentOverlay = ({ fileId, onClose, onSubmit }) => {
   const [commentText, setCommentText] = useState("");
 
-  // Handle comment submission
-  const handleSubmitComment = async () => {
+  // Handle change in textarea
+  const handleChange = (e) => {
+    setCommentText(e.target.value);
+  };
+
+  // Handle submit button click
+  const handleSubmit = async () => {
+    console.log("Submit button clicked with text:", commentText);
     if (!commentText.trim()) {
       alert("Comment cannot be empty.");
       return;
     }
 
+    // Trigger the parent component's onSubmit (which will handle the API call)
     try {
-      console.log("Submitting comment:", { fileId, commentText }); // Log the data being sent
-      const response = await axios.post(
-        "http://localhost:5000/api/comments/add",
-        { fileId, commentText },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      console.log("Response from server:", response.data); // Log server response
-      alert("Comment added successfully.");
+      await onSubmit(commentText); // Make sure this triggers the callback
+      setCommentText(""); // Reset comment input after submission
       onClose(); // Close the overlay after successful submission
-      setCommentText(""); // Reset comment text
     } catch (error) {
-      console.error("Error posting comment:", error); // Log the error object
-      console.error(
-        "Error details:",
-        error.response ? error.response.data : "No response data"
-      ); // Log the error response from the server
-      alert("Failed to post comment. Please try again.");
+      console.error("Failed to submit comment:", error);
+      alert("There was an error submitting your comment.");
     }
   };
 
@@ -45,7 +36,7 @@ const CommentOverlay = ({ fileId, onClose }) => {
           rows="6"
           placeholder="Write your comment here..."
           value={commentText}
-          onChange={(e) => setCommentText(e.target.value)}
+          onChange={handleChange}
         />
         <div className="flex justify-end space-x-4">
           <button
@@ -55,7 +46,7 @@ const CommentOverlay = ({ fileId, onClose }) => {
             Cancel
           </button>
           <button
-            onClick={handleSubmitComment} // Submit comment when clicked
+            onClick={handleSubmit} // Submit comment when clicked
             className="bg-blue-500 text-white px-4 py-2 rounded"
           >
             Submit Comment
