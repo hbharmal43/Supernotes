@@ -18,7 +18,9 @@ function FileUpload() {
 
     const courseNumberPattern = /^[A-Za-z]+-\d+$/;
     if (!courseNumberPattern.test(courseNumber)) {
-      setMessage("Course Number format should be COURSENAME-NUMBER (e.g., CSE-3315).");
+      setMessage(
+        "Course Number format should be COURSENAME-NUMBER (e.g., CSE-3315)."
+      );
       return;
     }
 
@@ -35,9 +37,13 @@ function FileUpload() {
     formData.append("courseNumber", courseNumber);
 
     try {
-      const response = await axios.post("http://localhost:5000/api/upload", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const response = await axios.post(
+        "http://localhost:5000/api/upload",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
 
       if (response.data.success) {
         setMessage(`File uploaded successfully for course ${courseNumber}!`);
@@ -66,7 +72,9 @@ function FileUpload() {
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg mx-auto">
-      <h2 className="text-center text-2xl font-bold text-blue-500 mb-4">File Upload</h2>
+      <h2 className="text-center text-2xl font-bold text-blue-500 mb-4">
+        File Upload
+      </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
@@ -117,7 +125,11 @@ function FileUpload() {
         </div>
       </form>
       {message && (
-        <p className={`text-center mt-4 ${message.includes("successfully") ? "text-green-500" : "text-red-500"}`}>
+        <p
+          className={`text-center mt-4 ${
+            message.includes("successfully") ? "text-green-500" : "text-red-500"
+          }`}
+        >
           {message}
         </p>
       )}

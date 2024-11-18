@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
-import Sidebar from '../components/Sidebar';
+import React, { useState, useEffect, useRef } from "react";
+import Sidebar from "../components/Sidebar";
 import FileCard from "../components/FileCard"; // Import FileCard component
-import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import axios from "axios";
+import { useParams } from "react-router-dom";
 
 function CourseFilesPage() {
   const { courseNumber } = useParams();
@@ -15,15 +15,19 @@ function CourseFilesPage() {
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    // Fetch files related to the course
     const fetchFiles = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/files?courseNumber=${courseNumber}`);
+        setLoading(true); // Set loading to true at the start of fetch
+        const response = await axios.get(`http://localhost:5000/api/files`, {
+          params: { courseNumber },
+        });
+        console.log("Fetched Files:", response.data); // Should include _id, ratings, and signed URLs
         setFiles(response.data);
-        setLoading(false);
+        setLoading(false); // Set loading to false after successful fetch
       } catch (err) {
+        console.error("Error fetching files:", err);
         setError("Failed to load files. Please try again.");
-        setLoading(false);
+        setLoading(false); // Ensure loading is set to false even on error
       }
     };
 
@@ -48,18 +52,18 @@ function CourseFilesPage() {
   };
 
   const handleKeyDown = (event) => {
-    if (event.key === 'Escape') {
+    if (event.key === "Escape") {
       handleCloseViewer();
       setDropdownOpen(null);
     }
   };
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
 
@@ -76,17 +80,24 @@ function CourseFilesPage() {
 
       {/* Main content */}
       <div className="flex-grow p-10">
-        <div className="bg-gray-50 bg-opacity-80 rounded-lg shadow-lg p-8" style={{ height: '90vh' }}>
+        <div
+          className="bg-gray-50 bg-opacity-80 rounded-lg shadow-lg p-8"
+          style={{ height: "90vh" }}
+        >
           <h1 className="text-4xl font-bold text-center text-gray-900 mb-6">
-                Files for {courseNumber}
-            </h1>
+            Files for {courseNumber}
+          </h1>
 
-          {loading && <p className="text-center text-gray-500">Loading files...</p>}
-          {error && !loading && <p className="text-red-500 text-center">{error}</p>}
+          {loading && (
+            <p className="text-center text-gray-500">Loading files...</p>
+          )}
+          {error && !loading && (
+            <p className="text-red-500 text-center">{error}</p>
+          )}
 
           {/* Files List */}
           {!error && !loading && files.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {files.map((file) => (
                 <FileCard
                   key={file._id}
@@ -96,14 +107,21 @@ function CourseFilesPage() {
               ))}
             </div>
           ) : (
-            !loading && <p className="text-center text-gray-500">No files available for this course.</p>
+            !loading && (
+              <p className="text-center text-gray-500">
+                No files available for this course.
+              </p>
+            )
           )}
         </div>
 
         {/* PDF Viewer */}
         {viewingFile && (
           <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-            <div className="bg-white p-4 rounded shadow-lg relative" ref={viewerRef}>
+            <div
+              className="bg-white p-4 rounded shadow-lg relative"
+              ref={viewerRef}
+            >
               <button
                 onClick={handleCloseViewer}
                 className="absolute top-2 right-2 text-red-500 font-bold"

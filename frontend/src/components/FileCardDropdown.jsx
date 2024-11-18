@@ -6,7 +6,9 @@ const FileCardDropdown = ({ isOpen, toggleDropdown, fileId }) => {
   const [isCommenting, setIsCommenting] = useState(false); // State to manage comment overlay visibility
 
   const handleFlag = async () => {
-    const description = prompt("Please describe the issue with this file and mention the filename too:");
+    const description = prompt(
+      "Please describe the issue with this file and mention the filename too:"
+    );
     if (description) {
       try {
         await axios.post("http://localhost:5000/api/flag", { description });
@@ -73,4 +75,3 @@ const FileCardDropdown = ({ isOpen, toggleDropdown, fileId }) => {
 };
 
 export default FileCardDropdown;
-

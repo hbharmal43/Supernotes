@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 
 const CommentOverlay = ({ fileId, onClose }) => {
-  const [commentText, setCommentText] = useState('');
+  const [commentText, setCommentText] = useState("");
 
   // Handle comment submission
   const handleSubmitComment = async () => {
@@ -14,21 +14,24 @@ const CommentOverlay = ({ fileId, onClose }) => {
     try {
       console.log("Submitting comment:", { fileId, commentText }); // Log the data being sent
       const response = await axios.post(
-        "http://localhost:5000/api/comments/add", 
+        "http://localhost:5000/api/comments/add",
         { fileId, commentText },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
       console.log("Response from server:", response.data); // Log server response
       alert("Comment added successfully.");
       onClose(); // Close the overlay after successful submission
-      setCommentText(''); // Reset comment text
+      setCommentText(""); // Reset comment text
     } catch (error) {
       console.error("Error posting comment:", error); // Log the error object
-      console.error("Error details:", error.response ? error.response.data : "No response data"); // Log the error response from the server
+      console.error(
+        "Error details:",
+        error.response ? error.response.data : "No response data"
+      ); // Log the error response from the server
       alert("Failed to post comment. Please try again.");
     }
   };
@@ -64,4 +67,3 @@ const CommentOverlay = ({ fileId, onClose }) => {
 };
 
 export default CommentOverlay;
-
