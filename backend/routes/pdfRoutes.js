@@ -172,5 +172,47 @@ router.get('/courses', async (req, res) => {
     }
 });
 
+router.post('/comments', verifyToken, async (req, res) => {
+    const { noteId, content } = req.body;
+    const userId = req.userId; // Get the userId from the verified token
+
+    if (!noteId || !content) {
+        return res.status(400).json({ message: 'Note ID and content are required.' });
+    }
+
+    try {
+        // Create a new comment
+        const newComment = new Comment({
+            noteId,
+            text: content,
+            createdBy: req.userId, 
+        });
+
+        // Save the comment to the database
+        await newComment.save();
+
+         res.status(201).json({ success: true, message: 'Comment added successfully.' });
+    } catch (error) {
+        console.error('Error adding comment:', error);
+        res.status(500).json({ success: false, message: 'Failed to add comment.' });
+    }    
+});
+
+router.get('/comments', async (req, res) => {
+    const { noteId } = req.query;
+
+     if (!noteId) {
+       return res.status(400).json({ message: 'Note ID is required' });
+     }
+
+     try {
+       const comments = await Comment.find({ noteId }).sort({ createdAt: -1 });
+       res.status(200).json({ comments });
+    } catch (error) {
+       console.error('Error fetching comments:', error);
+       res.status(500).json({ message: 'Error fetching comments' });
+    }
+});
+
 export default router;
 

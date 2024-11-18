@@ -14,6 +14,7 @@ import PdfListPage from "./pages/PdfListPage";     // Import PdfListPage compone
 import CourseFilesPage from "./pages/CourseFilesPage"; // New component to view files by course
 import MyNotesPage from "./pages/MyNotesPage";
 import LoadingSpinner from "./components/LoadingSpinner";
+import CommentsPage from "./pages/CommentsPage";
 
 import { Toaster } from "react-hot-toast";
 import { useAuthStore } from "./store/authStore";
@@ -136,6 +137,14 @@ function App() {
 						</ProtectedRoute>
 					}
 				/>
+                <Route
+                     path='/comments/:fileId'
+                     element={
+                       <ProtectedRoute>
+                         <CommentsPage /> {/* Comments page for a specific file */}
+                       </ProtectedRoute>
+                    }
+                />
 				{/* catch all routes */}
 				<Route path='*' element={<Navigate to='/' replace />} />
 			</Routes>

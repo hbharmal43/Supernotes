@@ -7,6 +7,7 @@ import pdfRoutes from "./routes/pdfRoutes.js"; // PDF upload routes
 import { connectDB } from "./db/connectDB.js";
 import authRoutes from "./routes/auth.route.js"; // Authentication routes
 import fileRoutes from "./routes/files.route.js"; // File routes for user notes
+import commentRoute from "./routes/comments.route.js"; // File routes for comments
 
 dotenv.config();
 const app = express();
@@ -28,6 +29,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api", pdfRoutes); // Routes for file uploads
 app.use("/api/auth", authRoutes); // Routes for authentication
 app.use("/api/files", fileRoutes); // Routes for fetching user notes
+app.use("/api/comments", commentRoute);
 
 // Production configuration to serve frontend
 if (process.env.NODE_ENV === "production") {
