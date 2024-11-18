@@ -10,10 +10,9 @@ const FileCard = ({ file, handleViewFile }) => {
   const dropdownRef = useRef(null);
 
   const handleRatingClick = async (value) => {
-    console.log("File ID:", file._id); // Log fileId to confirm it's valid
     try {
       const response = await axios.post(
-        `http://localhost:5000/api/files/rate`,
+        `http://localhost:5001/api/files/rate`,
         {
           fileId: file._id,
           rating: value,
@@ -47,11 +46,9 @@ const FileCard = ({ file, handleViewFile }) => {
   useEffect(() => {
     const fetchRatingData = async () => {
       try {
-        console.log("Fetching data for file:", file.fileName);
         const { data } = await axios.get(
-          `http://localhost:5000/api/files/${file._id}/ratings`
+          `http://localhost:5001/api/files/${file._id}/ratings`
         );
-        console.log("Rating data:", data);
 
         setAverageRating(data.averageRating || 0);
         setReviewCount(data.totalRatings || 0);

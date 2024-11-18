@@ -18,10 +18,9 @@ function CourseFilesPage() {
     const fetchFiles = async () => {
       try {
         setLoading(true); // Set loading to true at the start of fetch
-        const response = await axios.get(`http://localhost:5000/api/files`, {
+        const response = await axios.get(`http://localhost:5001/api/files`, {
           params: { courseNumber },
         });
-        console.log("Fetched Files:", response.data); // Should include _id, ratings, and signed URLs
         setFiles(response.data);
         setLoading(false); // Set loading to false after successful fetch
       } catch (err) {

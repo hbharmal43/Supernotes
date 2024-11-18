@@ -12,7 +12,7 @@ const FileCardDropdown = ({ isOpen, toggleDropdown, fileId }) => {
     );
     if (description) {
       try {
-        await axios.post("http://localhost:5000/api/flag", { description });
+        await axios.post("http://localhost:5001/api/flag", { description });
         alert("Flag raised and notification sent.");
       } catch (error) {
         console.error("Error sending flag notification:", error);
