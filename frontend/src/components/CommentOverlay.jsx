@@ -16,7 +16,7 @@ const CommentOverlay = ({ fileId, onClose, onSubmit }) => {
       return;
     }
 
-  // Trigger the parent component's onSubmit (which will handle the API call)
+    // Trigger the parent component's onSubmit (which will handle the API call)
     try {
       await onSubmit(commentText); // Make sure this triggers the callback
       setCommentText(""); // Reset comment input after submission
@@ -26,7 +26,6 @@ const CommentOverlay = ({ fileId, onClose, onSubmit }) => {
       alert("There was an error submitting your comment.");
     }
   };
-
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
@@ -59,4 +58,3 @@ const CommentOverlay = ({ fileId, onClose, onSubmit }) => {
 };
 
 export default CommentOverlay;
-
