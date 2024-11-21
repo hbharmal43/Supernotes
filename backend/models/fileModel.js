@@ -1,29 +1,22 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
-const fileSchema = new mongoose.Schema(
-  {
-    fileName: {
-      type: String,
-      required: true,
-    },
-    description: String,
-    tags: [String],
-    courseNumber: String,
-    filePath: {
-      type: String,
-      required: true,
-    },
-    uploadedBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User", // Reference to the User model, if needed in the future
-      required: true, // Make it optional
-    },
-    ratings: {
-      type: [Number],
-      default: [],
-    },
+const fileSchema = new mongoose.Schema({
+  fileName: {
+    type: String,
+    required: true,
   },
-  { timestamps: true }
-);
+  description: String,
+  tags: [String],
+  courseNumber: String,
+  filePath: {
+    type: String,
+    required: true,
+  },
+  uploadedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User', // Reference to the User model, if needed in the future
+    required: true, // Make it optional
+  },
+}, { timestamps: true });
 
-export const File = mongoose.model("File", fileSchema);
+export const File = mongoose.model('File', fileSchema);
