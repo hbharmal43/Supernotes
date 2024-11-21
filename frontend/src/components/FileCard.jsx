@@ -1,65 +1,32 @@
 import React, { useState, useRef, useEffect } from "react";
-import axios from "axios";
 import FileCardDropdown from "./FileCardDropdown";
 
 const FileCard = ({ file, handleViewFile }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [userRating, setUserRating] = useState(0); // Individual user's rating
-  const [averageRating, setAverageRating] = useState(0); // File's average rating
-  const [reviewCount, setReviewCount] = useState(0); // Total reviews
+  const [rating, setRating] = useState(0); // State for rating
   const dropdownRef = useRef(null);
 
-  const handleRatingClick = async (value) => {
-    try {
-      const response = await axios.post(
-        `http://localhost:5001/api/files/rate`,
-        {
-          fileId: file._id,
-          rating: value,
-        }
-      );
-      const { averageRating, totalRatings } = response.data;
-
-      // Update the average and review count
-      setAverageRating(averageRating);
-      setReviewCount(totalRatings);
-
-      // Set the user's specific rating
-      setUserRating(value);
-    } catch (error) {
-      console.error("Error saving rating:", error);
-    }
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
   };
 
-  // Handle clicking outside the dropdown
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
       setIsDropdownOpen(false);
     }
   };
 
-  // Toggle dropdown visibility
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
+  const handleRatingClick = (value) => {
+    setRating(value);
+    // Optionally, you could send this rating to a backend here
   };
 
   useEffect(() => {
-    const fetchRatingData = async () => {
-      try {
-        const { data } = await axios.get(
-          `http://localhost:5001/api/files/${file._id}/ratings`
-        );
-
-        setAverageRating(data.averageRating || 0);
-        setReviewCount(data.totalRatings || 0);
-        setUserRating(data.userRating || 0); // If your API provides user's rating
-      } catch (error) {
-        console.error("Error fetching rating data:", error);
-      }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
     };
-
-    fetchRatingData();
-  }, [file._id]);
+  }, []);
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md flex flex-col items-center h-auto w-full max-w-[280px] mx-auto transform transition-transform hover:scale-105 hover:shadow-lg">
@@ -70,34 +37,27 @@ const FileCard = ({ file, handleViewFile }) => {
       {/* Thumbnail Preview */}
       <div className="mb-4 w-full h-36 flex justify-center items-center overflow-hidden rounded border border-gray-300">
         <img
-          src="/7670113.png" // Replace with the correct thumbnail path
+          src="/7670113.png" // Make sure this is the correct path
           alt={file.fileName}
           className="object-cover w-full h-full"
         />
       </div>
 
       {/* Star Rating */}
-      <div className="flex items-center mb-4">
+      <div className="flex mb-4">
         {[1, 2, 3, 4, 5].map((star) => (
           <svg
             key={star}
             onClick={() => handleRatingClick(star)}
             xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
+            fill={star <= rating ? "gold" : "gray"}
             viewBox="0 0 24 24"
-            className={`w-6 h-6 cursor-pointer transition-colors duration-200 ${
-              star <= (userRating > 0 ? userRating : averageRating)
-                ? "text-yellow-400"
-                : "text-gray-300"
-            }`}
+            stroke="none"
+            className="w-6 h-6 cursor-pointer transition-colors duration-200"
           >
             <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
           </svg>
         ))}
-        <span className="ml-2 text-gray-600 text-sm">
-          {averageRating ? averageRating.toFixed(1) : "0.0"} ({reviewCount || 0}
-          )
-        </span>
       </div>
 
       {/* Buttons Container */}

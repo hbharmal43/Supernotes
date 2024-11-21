@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const Comments = ({ noteId }) => {
-  const [commentText, setCommentText] = useState("");
+  const [commentText, setCommentText] = useState('');
   const [comments, setComments] = useState([]);
   const [error, setError] = useState(null);
 
@@ -11,12 +11,12 @@ const Comments = ({ noteId }) => {
     const fetchComments = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5001/api/comments?noteId=${noteId}`
+          `http://localhost:5000/api/comments?noteId=${noteId}`
         );
         setComments(response.data.comments || []);
       } catch (err) {
-        setError("Failed to load comments");
-        console.error("Error fetching comments:", err);
+        setError('Failed to load comments');
+        console.error('Error fetching comments:', err);
       }
     };
 
@@ -29,40 +29,40 @@ const Comments = ({ noteId }) => {
   const handleAddComment = async (e) => {
     e.preventDefault();
     if (!commentText.trim()) {
-      alert("Please enter a comment.");
+      alert('Please enter a comment.');
       return;
     }
 
     try {
       const response = await axios.post(
-        "http://localhost:5001/api/comments",
+        'http://localhost:5000/api/comments',
         {
           noteId,
           commentText,
         },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`, // Assuming token is stored in localStorage
+            Authorization: `Bearer ${localStorage.getItem('token')}`, // Assuming token is stored in localStorage
           },
         }
       );
 
       if (response.data.success) {
-        setCommentText("");
+        setCommentText('');
         setComments((prevComments) => [
           ...prevComments,
           {
             text: commentText,
-            createdBy: "You", // Replace with actual username if needed
+            createdBy: 'You', // Replace with actual username if needed
             createdAt: new Date().toISOString(),
           },
         ]);
       } else {
-        alert("Failed to add comment.");
+        alert('Failed to add comment.');
       }
     } catch (error) {
-      console.error("Error adding comment:", error);
-      setError("Failed to add comment. Please try again.");
+      console.error('Error adding comment:', error);
+      setError('Failed to add comment. Please try again.');
     }
   };
 
@@ -110,3 +110,4 @@ const Comments = ({ noteId }) => {
 };
 
 export default Comments;
+

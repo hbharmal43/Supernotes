@@ -11,7 +11,7 @@ import commentRoute from "./routes/comments.route.js"; // File routes for commen
 
 dotenv.config();
 const app = express();
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5000;
 const __dirname = path.resolve();
 
 // CORS configuration
