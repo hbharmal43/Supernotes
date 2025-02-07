@@ -110,36 +110,24 @@ Ensure you have the following installed:
    git clone https://github.com/hbharmal43/supernotes.git
    cd supernotes
 Set Up Backend
-
-bash
-Copy
-Edit
 cd backend
 npm install
-Create a .env file inside backend/ and configure:
 
-env
-Copy
-Edit
+Create a .env file inside backend/ and configure:
 MONGO_URI=<your-mongodb-connection-string>
 JWT_SECRET=<your-jwt-secret>
 AWS_ACCESS_KEY=<your-aws-access-key>
 AWS_SECRET_KEY=<your-aws-secret-key>
 AWS_BUCKET_NAME=<your-aws-bucket-name>
+
 Start the backend server:
-
-bash
-Copy
-Edit
 npm start
-Set Up Frontend
 
-bash
-Copy
-Edit
+Set Up Frontend
 cd ../frontend
 npm install
 npm run dev
+
 Access the Application
 Open http://localhost:3000 in your browser.
 
@@ -158,9 +146,6 @@ Push to branch (git push origin feature-name)
 Create a pull request
 Screenshots 🖼️
 <!-- Add actual images by replacing '#' with image links -->
-
-
-
 
 License 📜
 This project is licensed under the MIT License. See the LICENSE file for details.
